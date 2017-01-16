@@ -1,12 +1,12 @@
 <template>
-  <div class="hello">
+  <div class="welcome">
     <h1>{{ msg }}</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'hello',
+  name: 'welcome',
   data () {
     return {
       msg: 'Bienvenue sur RadiSaclay'
