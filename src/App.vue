@@ -1,21 +1,13 @@
 <template>
   <div id="app">
     <img src="./assets/logoRadiSaclay.png" width="150">
-    <welcome></welcome>
-    <login></login>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Welcome from './components/Welcome'
-import Login from './components/Login'
-
 export default {
-  name: 'app',
-  components: {
-    Welcome,
-    Login
-  }
+  name: 'app'
 }
 </script>
 
