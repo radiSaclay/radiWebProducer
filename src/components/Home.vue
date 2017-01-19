@@ -1,7 +1,6 @@
 <template>
   <div class="home">
     <h1>Liste des notifications postées :</h1>
-    <router-link to="/send-notif">Poster une annonce</router-link>
     <notiflist></notiflist>
   </div>
 </template>
