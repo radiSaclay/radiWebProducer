@@ -1,17 +1,13 @@
 <template>
   <div id="app">
-
-    <!-- TODO: hide the menu bar when in the login page -->
     <menubar></menubar>
-
     <img src="./assets/logoRadiSaclay.png" width="150">
     <router-view></router-view>
-
   </div>
 </template>
 
 <script>
-import Menubar from './components/home/Menubar'
+import Menubar from './components/Menubar'
 export default {
   name: 'app',
   components: {
