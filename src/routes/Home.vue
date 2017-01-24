@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Notiflist from './home/Notiflist'
+import Notiflist from '../components/Notiflist'
 export default {
   name: 'home',
   components: {
