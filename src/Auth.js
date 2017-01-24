@@ -38,12 +38,5 @@ export default {
     } else {
       this.user.authenticated = false
     }
-  },
-
-  // The object to be passed as a header for authenticated requests
-  getAuthHeader () {
-    return {
-      'Authorization': 'Bearer ' + localStorage.getItem('id_token')
-    }
   }
 }
