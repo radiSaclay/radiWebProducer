@@ -1,5 +1,4 @@
-var SERVEUR_ROOT = 'http://147.250.84.250:3001/radisaclay/public/'
-// var API_PATH = 'api/'
+var SERVEUR_ROOT = 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/'
 
 const settings = {
   keys: {
