@@ -10,6 +10,8 @@ import VueResource from 'vue-resource'
 Vue.use(VueResource)
 Vue.use(VueRouter)
 
+require('./config/css/main.css')
+
 const router = new VueRouter({
   routes: routes.routes
 })

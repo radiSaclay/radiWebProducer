@@ -1,12 +1,27 @@
 <template>
   <div class="login">
-    <input type="text" name="email" placeholder="adresse e-mail" v-model="credentials.email">
-    <input type="password" name="password" placeholder="mot de passe" v-model="credentials.password">
-    <button v-on:click="submit">Connexion</button>
     <br>
-    <button v-on:click="sendPassword">mot de passe oublié ?</button>
-    <p v-if="attempted"> identifiants incorrects</p>
-    <p v-if="showLoginDetails">identifiants de test {{ loginDetails }}<p>
+    <div class="ui left icon input">
+      <input type="text" name="email" placeholder="adresse e-mail" v-model="credentials.email">
+      <i class="user icon"></i>
+    </div>
+    <br>
+    <br>
+    <div class="ui left icon input">
+      <input type="password" name="password" placeholder="mot de passe" v-model="credentials.password">
+      <i class="lock icon"></i>
+    </div>
+    <br>
+    <br>
+    <button class="ui black button" tabindex="0" v-on:click="submit">Connexion</button>
+    <br>
+    <br>
+    <div class="ui error compact message" v-if="attempted"> identifiants incorrects</div>
+    <br>
+    <div class="ui inverted blue basic button" v-on:click="sendPassword">
+      <div class="header">mot de passe oublié ?</div>
+      <div class="message" v-if="showLoginDetails">identifiants de test {{ loginDetails }}</div>
+    </div>
   </div>
 </template>
 
