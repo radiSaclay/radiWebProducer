@@ -1,7 +1,3 @@
-/**
- * Created by tiberio on 30/01/2017.
- */
-
 var express = require('express')
 var path = require('path');
 var serveStatic = require('serve-static')
