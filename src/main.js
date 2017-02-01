@@ -1,3 +1,8 @@
+/* *
+* This is the first Vue file to be loaded.
+* It is loaded by index.html because it has a div of id app which is referenced here
+*
+* */
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
