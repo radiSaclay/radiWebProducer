@@ -1,4 +1,4 @@
-<template>
+<template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div class="ui fixed inverted menu">
     <div class="ui container">
       <router-link to="/home" class="item" v-if="user.authenticated">Voir mes annonces</router-link>
