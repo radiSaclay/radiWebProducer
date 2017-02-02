@@ -1,5 +1,5 @@
 /* *
-* This is the first Vue file to be loaded.
+* This is the first file to be loaded from index.html .
 * It is loaded by index.html because it has a div of id app which is referenced here
 *
 * */

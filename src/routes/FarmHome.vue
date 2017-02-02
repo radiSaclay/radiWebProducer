@@ -1,18 +1,18 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
   <div class="farmhome">
-    <div class = "nameline">
+    <div>
       <input  :disabled="!editingName" v-model="name" placeholder="">
       <button v-on:click="editName">{{editingName ? "Done" : "Edit"}}</button>
     </div>
-    <div class = "addressline">
+    <div>
       <input  :disabled="!editingAddress" v-model="address" placeholder="">
       <button v-on:click="editAddress">{{editingAddress ? "Done" : "Edit"}}</button>
     </div>
-    <div class = "emailline">
+    <div>
       <input  :disabled="!editingEmail" v-model="email" placeholder="">
       <button v-on:click="editEmail">{{editingEmail ? "Done" : "Edit"}}</button>
     </div>
-    <div class = "phoneline">
+    <div>
       <input  :disabled="!editingPhone" v-model="phone" placeholder="">
       <button v-on:click="editPhone">{{editingPhone ? "Done" : "Edit"}}</button>
     </div>
