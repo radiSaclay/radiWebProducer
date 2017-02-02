@@ -1,4 +1,4 @@
-<template>
+<template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div class="login">
     <br>
     <div class="ui left icon input">
@@ -45,7 +45,7 @@
     },
     methods: {
       submit: function () {
-        auth.login(this, this.credentials, '/home')
+        auth.login(this, this.credentials, '/farmhome')
         this.attempted = true // tells if the user as already attempted to connect
       },
       // TODO replace by a method that resets the password
