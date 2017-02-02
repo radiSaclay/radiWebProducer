@@ -1,10 +1,15 @@
-<template>
+<template xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
   <div class="farmhome">
-    <h2>{{ name }}</h2>
-    <h2>Address: {{ address }}</h2>
-    <h2>Email: {{ email }}</h2>
-    <h2>Phone: {{ phone }}</h2>
+    <div class = "nameline">
+    <input  :disabled="!editingName" v-model="name" placeholder="">
+    <button v-on:click="editName">{{editingName ? "Done" : "Edit"}}</button>
+    </div>
+    <div class = "addressline">
+    <input  :disabled="!editingAddress" v-model="address" placeholder="">
+    <button v-on:click="editAddress">{{editingAddress ? "Done" : "Edit"}}</button>
+    </div>
   </div>
+
 </template>
 
 
@@ -28,12 +33,27 @@
         name: '',
         address: '',
         email: '',
-        phone: ''
+        phone: '',
+        show: false,
+        editingName: false,
+        editingAddress: false
+      }
+    },
+    methods: {
+      editName: function () {
+        this.editingName = !this.editingName
+      },
+      editAddress: function () {
+        this.editingAddress = !this.editingAddress
       }
     }
-
   }
 </script>
 
 
 
+<style scoped>
+  .farmhome input {
+    display: inline-block;
+  }
+</style>
