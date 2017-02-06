@@ -1,23 +1,24 @@
 <template>
   <div class="eventhome">
-    <div>
-      <input  :disabled="!editingTitle" v-model="title" placeholder="">
-      <button v-on:click="editTitle">{{editingTitle ? "Done" : "Edit"}}</button>
-    </div>
-    <div>
-      <input  :disabled="!editingAddress" v-model="address" placeholder="">
-      <button v-on:click="editAddress">{{editingAddress ? "Done" : "Edit"}}</button>
-    </div>
-    <div>
-      <input  :disabled="!editingEmail" v-model="email" placeholder="">
-      <button v-on:click="editEmail">{{editingEmail ? "Done" : "Edit"}}</button>
-    </div>
-    <div>
-      <input  :disabled="!editingPhone" v-model="phone" placeholder="">
-      <button v-on:click="editPhone">{{editingPhone ? "Done" : "Edit"}}</button>
+    <div v-for="event in events" :key="event.id">
+      <div>
+        <input  :disabled="!editingTitle" v-model="event.title" placeholder="">
+        <button :id="event.id" v-on:click="editTitle">{{editingTitle ? "Done" : "Edit"}}</button>
+      </div>
+      <div>
+        <input  :disabled="!editingDescription" v-model="event.description" placeholder="">
+        <button :id="event.id" v-on:click="editDescription">{{editingDescription ? "Done" : "Edit"}}</button>
+      </div>
+      <div>
+        <input  :disabled="!editingBeginDate" v-model="event.BeginAt.date" placeholder="">
+        <button :id="event.id" v-on:click="editBeginDate">{{editingBeginDate ? "Done" : "Edit"}}</button>
+      </div>
+      <div>
+        <input :disabled="!editingEndDate" v-model="event.EndAt.date" placeholder="Date de Fin">
+        <button :id="event.id" v-on:click="editEndDate">{{editingEndDate ? "Done" : "Edit"}}</button>
+      </div>
     </div>
   </div>
-
 </template>
 
 
@@ -25,6 +26,29 @@
 <script>
   let farmid
   let events
+  import Vue from 'vue'
+
+
+
+  // Creates a null date because the v-model expectes event.EndAt.date to exist (even if it is null)
+  function dateEndOrNull(event) {
+    if (!event.EndAt){
+      event.EndAt = {date: null};
+    }
+    return event
+  }
+  // Gets a list of events as seen by the browser (a list of objects) and returns the index
+  // of the event having Server ID EventIDperServer
+  function findVueId(event_list, EventIDperServer) {
+    let vue_event_id
+    for (let event_index=0; event_index < event_list.length; event_index++){
+      if(event_list[event_index].id == EventIDperServer){
+        vue_event_id = event_index
+        return vue_event_id
+      }
+    }
+    return null
+  }
   export default {
     /* global localStorage:true */
     data () {
@@ -35,12 +59,11 @@
       }).then(function successCallback (response) {
         farmid = response.body['farm']['id']
         this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/?farmId=' + farmid).then(function successCallback (response) {
-          // this callback will be called asynchronously
-          // when the response is available
-          this.title = response.body[0]['title']
-//          this.address = response.body['address']
-//          this.email = response.body['email']
-//          this.phone = response.body['phone']
+          // Make sure events have at least a null end date
+          for (let i=0; i<response.body.length; i++){
+            response.body[i] = (dateEndOrNull(response.body[i]))
+          }
+          this.events = response.body
         }, function errorCallback (response) {
           // called asynchronously if an error occurs
           // or server returns response with an error status.
@@ -48,65 +71,72 @@
         })
       })
       return {
-        title: '',
-        address: '',
-        email: '',
-        phone: '',
-        show: false,
+        events: [],
         editingTitle: false,
-        editingAddress: false,
-        editingEmail: false,
-        editingPhone: false
+        editingDescription: false,
+        editingBeginDate: false,
+        editingEndDate: false
       }
     },
     methods: {
-      editTitle: function () {
+      editTitle: function (event) {
+        let vue_event_id
+        vue_event_id = findVueId(this.events, event.target.id)
         if (this.editingTitle) {
-          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farmid, method: 'PUT',
+          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + event.target.id, method: 'PUT',
             headers: {
               'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
             }, body: {
-              "name": this.title
+              "title": this.events[vue_event_id].title
             }
           })
         }
         this.editingTitle = !this.editingTitle
       },
-      editAddress: function () {
-        if (this.editingAddress) {
-          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farmid, method: 'PUT',
+      editDescription: function (event) {
+        let vue_event_id
+        vue_event_id = findVueId(this.events, event.target.id)
+        if (this.editingDescription) {
+          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + event.target.id, method: 'PUT',
             headers: {
               'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
             }, body: {
-              "address": this.address
+              "description": this.events[vue_event_id].description
             }
           })
         }
-        this.editingAddress = !this.editingAddress
+        this.editingDescription = !this.editingDescription
       },
-      editEmail: function () {
-        if (this.editingEmail) {
-          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farmid, method: 'PUT',
+      editBeginDate: function (event) {
+        let vue_event_id
+        vue_event_id = findVueId(this.events, event.target.id)
+        this.events[vue_event_id].BeginAt.date = "2018-01-31 09:15:41";
+        if (this.editingBeginDate) {
+          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + event.target.id, method: 'PUT',
             headers: {
               'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
             }, body: {
-              "email": this.email
+              "BeginAt": {
+                "date": "2018-02-31 09:15:41",
+                "timezone_type": 3,
+                "timezone": "UTC"
+              }
             }
           })
         }
-        this.editingEmail = !this.editingEmail
+        this.editingBeginDate = !this.editingBeginDate
       },
-      editPhone: function () {
-        if (this.editingPhone) {
-          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farmid, method: 'PUT',
-            headers: {
-              'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
-            }, body: {
-              "phone": this.phone
-            }
-          })
-        }
-        this.editingPhone = !this.editingPhone
+      editEndDate: function (event) {
+//        if (this.editingEndDate) {
+//          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + input.target.id, method: 'PUT',
+//            headers: {
+//              'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
+//            }, body: {
+//              "description": "awesome"
+//            }
+//          })
+//        }
+        this.editingEndDate = !this.editingEndDate
       }
     }
   }
@@ -114,7 +144,7 @@
 
 
 
-<style scoped>
+<style>
   .eventhome input {
     display: inline-block;
   }

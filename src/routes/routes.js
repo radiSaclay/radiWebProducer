@@ -4,12 +4,14 @@
 import Home from './Home'
 import Login from './Login'
 import Sendnotif from './Sendnotif'
-import farmview from './FarmHome.vue'
+import farmhome from './FarmHome.vue'
+import eventhome from './EventHome.vue'
 
 const routes = [
   { path: '/', component: Login },
   { path: '/home', component: Home },
-  { path: '/farmhome', component: farmview },
+  { path: '/farmhome', component: farmhome },
+  { path: '/eventhome', component: eventhome },
   { path: '/send-notif', component: Sendnotif }
 ]
 
