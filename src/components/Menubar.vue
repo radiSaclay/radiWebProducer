@@ -1,5 +1,6 @@
-<template xmlns:v-on="http://www.w3.org/1999/xhtml">
-  <div class="ui fixed inverted menu">
+
+<template>
+  <div class="ui primary top fixed inverted menu">
     <div class="ui container">
       <router-link to="/farmhome" class="item" v-if="user.authenticated">Ma Ferme</router-link>
       <router-link to="/home" class="item" v-if="user.authenticated">Voir mes annonces</router-link>

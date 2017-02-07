@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <menubar></menubar>
-    <img src="./assets/logoRadiSaclayBlanc.png" width="100">
+    <img class="ui centered image" src="./assets/logoRadiSaclayBlanc.png" width="100">
     <router-view></router-view>
   </div>
 </template>
