@@ -1,6 +1,7 @@
 <template>
   <div class="eventhome">
     <div v-for="event in events" :key="event.id">
+      <h1> Event {{event.id}} </h1>
       <div>
         <input  :disabled="!editingEvent[event.id]" v-model="event.title" placeholder="">
       </div>
@@ -8,11 +9,25 @@
         <input  :disabled="!editingEvent[event.id]" v-model="event.description" placeholder="">
       </div>
       <div>
-        <input  :disabled="!editingEvent[event.id]" v-model="event.BeginAt.date" placeholder="">
+        <input  :disabled="!editingEvent[event.id]" v-model="event.beginAt" placeholder="">
       </div>
       <div>
-        <input :disabled="!editingEvent[event.id]" v-model="event.EndAt.date" placeholder="Date de Fin">
+        <input :disabled="!editingEvent[event.id]" v-model="event.endAt" placeholder="Date de Fin">
       </div>
+      <h3> Produits </h3>
+      <div v-for="product in event.products" :key="product.id">
+        <div>
+          <input :disabled="!editingEvent[event.id]" v-model="product.name" placeholder="">
+        </div>
+      </div>
+      <select>
+        <div v-for="product in ALLproducts">
+          <h3>{{product}}</h3>
+          <option>product</option>
+        </div>
+        <option>B</option>
+        <option>C</option>
+      </select>
       <button :id="event.id" v-on:click="editEvent">{{editingEvent[event.id] ? "Done" : "Edit"}}</button>
       <br> </br>
     </div>
@@ -25,9 +40,21 @@
   let farmid
   let events
   let editingEvent = {}
+  let ALLproducts
   import Vue from 'vue'
 
+  function getProducts (context){
+    context.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/products/', {
+      headers: {
+        Authorization: localStorage.getItem('id_token')
+      }
+    }).then(function successCallback (response) {
+      console.log(response.body)
+      context.ALLproducts = response.body
+      return response.body
 
+    })
+  }
 
   // Creates a null date because the v-model expectes event.EndAt.date to exist (even if it is null)
   function dateEndOrNull(event) {
@@ -51,6 +78,7 @@
   export default {
     /* global localStorage:true */
     data () {
+      ALLproducts = getProducts(this)
       // get user farm id
       this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/auth/user', {
         headers: {
@@ -59,11 +87,11 @@
       }).then(function successCallback (response) {
         // save farm Id
         farmid = response.body['farm']['id']
-        this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/?farmId=' + farmid).then(function successCallback (response) {
+        this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/?farmId=' + farmid + '&embedded=1').then(function successCallback (response) {
           // Make sure events have at least a null end date
-          for (let i=0; i<response.body.length; i++){
-            response.body[i] = (dateEndOrNull(response.body[i]))
-          }
+//          for (let i=0; i<response.body.length; i++){
+//            response.body[i] = (dateEndOrNull(response.body[i]))
+//          }
           this.events = response.body
         }, function errorCallback (response) {
           // called asynchronously if an error occurs
@@ -76,7 +104,8 @@
         editingTitle: false,
         editingDescription: false,
         editingBeginDate: false,
-        editingEvent
+        editingEvent,
+        ALLproducts
       }
     },
     methods: {
@@ -89,7 +118,10 @@
               'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
             }, body: {
               "title": this.events[vue_event_id].title,
-              "description": this.events[vue_event_id].description
+              "description": this.events[vue_event_id].description,
+              "products": this.events[vue_event_id].products,
+              "beginAt": this.events[vue_event_id].beginAt,
+              "endAt": this.events[vue_event_id].endAt
             }
           })
         }
