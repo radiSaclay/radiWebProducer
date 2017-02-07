@@ -45,7 +45,7 @@
     },
     methods: {
       submit: function () {
-        auth.login(this, this.credentials, '/home')
+        auth.login(this, this.credentials, '/farmhome')
         this.attempted = true // tells if the user as already attempted to connect
       },
       // TODO replace by a method that resets the password
