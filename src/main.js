@@ -14,6 +14,7 @@ import VueResource from 'vue-resource'
 // initialization of the router
 Vue.use(VueResource)
 Vue.use(VueRouter)
+Vue.config.debug = true;
 
 require('./config/css/main.css')
 
