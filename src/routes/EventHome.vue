@@ -16,18 +16,13 @@
       </div>
       <h3> Produits </h3>
       <div v-for="product in event.products" :key="product.id">
-        <div>
-          <input :disabled="!editingEvent[event.id]" v-model="product.name" placeholder="">
-        </div>
+        <select :disabled="!editingEvent[event.id]" v-model="product.name">
+          <option v-for="product in products">
+            {{product.name}}
+          </option>
+        </select>
       </div>
-      <select>
-        <div v-for="product in ALLproducts">
-          <h3>{{product}}</h3>
-          <option>product</option>
-        </div>
-        <option>B</option>
-        <option>C</option>
-      </select>
+
       <button :id="event.id" v-on:click="editEvent">{{editingEvent[event.id] ? "Done" : "Edit"}}</button>
       <br> </br>
     </div>
@@ -40,9 +35,10 @@
   let farmid
   let events
   let editingEvent = {}
-  let ALLproducts
+  let products
   import Vue from 'vue'
 
+  // Receives the products from server and stocks them in the products variable
   function getProducts (context){
     context.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/products/', {
       headers: {
@@ -50,18 +46,8 @@
       }
     }).then(function successCallback (response) {
       console.log(response.body)
-      context.ALLproducts = response.body
-      return response.body
-
+      context.products = response.body
     })
-  }
-
-  // Creates a null date because the v-model expectes event.EndAt.date to exist (even if it is null)
-  function dateEndOrNull(event) {
-    if (!event.EndAt){
-      event.EndAt = {date: null};
-    }
-    return event
   }
   // Gets a list of events as seen by the browser (a list of objects) and returns the index
   // of the event having Server ID EventIDperServer
@@ -78,7 +64,8 @@
   export default {
     /* global localStorage:true */
     data () {
-      ALLproducts = getProducts(this)
+      // Receive product list from server
+      getProducts(this)
       // get user farm id
       this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/auth/user', {
         headers: {
@@ -88,10 +75,6 @@
         // save farm Id
         farmid = response.body['farm']['id']
         this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/?farmId=' + farmid + '&embedded=1').then(function successCallback (response) {
-          // Make sure events have at least a null end date
-//          for (let i=0; i<response.body.length; i++){
-//            response.body[i] = (dateEndOrNull(response.body[i]))
-//          }
           this.events = response.body
         }, function errorCallback (response) {
           // called asynchronously if an error occurs
@@ -105,7 +88,7 @@
         editingDescription: false,
         editingBeginDate: false,
         editingEvent,
-        ALLproducts
+        products
       }
     },
     methods: {
