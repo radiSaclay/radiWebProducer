@@ -15,12 +15,12 @@
         <input :disabled="!editingEvent[event.id]" v-model="event.endAt" placeholder="Date de Fin">
       </div>
       <h3> Produits </h3>
-      <div v-for="product in event.products" :key="product.id">
-        <select :disabled="!editingEvent[event.id]" v-model="product.name">
-          <option v-for="product in products">
-            {{product.name}}
-          </option>
-        </select>
+      <div v-for="(event_product, index) in event.products">
+      <select v-model="event.products[index]" v-if="event.products[index]" :disabled="!editingEvent[event.id]" >
+        <option v-for="product in products" v-bind:value="product">
+          {{product.name}}
+        </option>
+      </select>
       </div>
 
       <button :id="event.id" v-on:click="editEvent">{{editingEvent[event.id] ? "Done" : "Edit"}}</button>
@@ -35,9 +35,16 @@
   let farmid
   let events
   let editingEvent = {}
-  let products
+  let products = null
   import Vue from 'vue'
 
+  function getProductsID(products){
+    let productsID = new Array();
+    products.forEach(function (product){
+      productsID.push(product.id)
+    });
+    return productsID
+  }
   // Receives the products from server and stocks them in the products variable
   function getProducts (context){
     context.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/products/', {
@@ -45,7 +52,6 @@
         Authorization: localStorage.getItem('id_token')
       }
     }).then(function successCallback (response) {
-      console.log(response.body)
       context.products = response.body
     })
   }
@@ -79,7 +85,6 @@
         }, function errorCallback (response) {
           // called asynchronously if an error occurs
           // or server returns response with an error status.
-          console.log(response)
         })
       })
       return {
@@ -93,8 +98,10 @@
     },
     methods: {
       editEvent: function (event) {
+          console.log(localStorage.getItem('id_token'))
         let vue_event_id
         vue_event_id = findVueId(this.events, event.target.id)
+        console.log(getProductsID(this.events[vue_event_id].products))
         if (this.editingEvent) {
           this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + event.target.id, method: 'PUT',
             headers: {
@@ -102,9 +109,9 @@
             }, body: {
               "title": this.events[vue_event_id].title,
               "description": this.events[vue_event_id].description,
-              "products": this.events[vue_event_id].products,
               "beginAt": this.events[vue_event_id].beginAt,
-              "endAt": this.events[vue_event_id].endAt
+              "endAt": this.events[vue_event_id].endAt,
+              "products": 1
             }
           })
         }
