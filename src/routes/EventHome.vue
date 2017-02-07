@@ -13,7 +13,7 @@
       <div>
         <input :disabled="!editingEvent[event.id]" v-model="event.EndAt.date" placeholder="Date de Fin">
       </div>
-      <button :id="event.id" v-on:click="editEvent">{{editingEvent ? "Done" : "Edit"}}</button>
+      <button :id="event.id" v-on:click="editEvent">{{editingEvent[event.id] ? "Done" : "Edit"}}</button>
       <br> </br>
     </div>
   </div>
@@ -24,7 +24,7 @@
 <script>
   let farmid
   let events
-  let editingEvent = []
+  let editingEvent = {}
   import Vue from 'vue'
 
 
@@ -71,7 +71,6 @@
           console.log(response)
         })
       })
-      editingEvent[5] = true
       return {
         events: [],
         editingTitle: false,
@@ -84,16 +83,19 @@
       editEvent: function (event) {
         let vue_event_id
         vue_event_id = findVueId(this.events, event.target.id)
-        if (this.editingTitle) {
+        if (this.editingEvent) {
           this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + event.target.id, method: 'PUT',
             headers: {
               'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
             }, body: {
-              "title": this.events[vue_event_id].title
+              "title": this.events[vue_event_id].title,
+              "description": this.events[vue_event_id].description
             }
           })
         }
-        editingEvent.splice(event.target.id, 1, !editingEvent[event.target.id])
+        // Replaces element in array, splice syntax = (begin, who many to delete, what to insert)
+        // Needs to be done like this so Vue can detect changes and update the DOM
+        this.$set(editingEvent, event.target.id, !editingEvent[event.target.id])
       }
     }
   }
