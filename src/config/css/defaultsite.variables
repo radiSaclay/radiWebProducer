@@ -78,8 +78,8 @@
 
 /* Input Text Color */
 @inputColor: @textColor;
-@inputPlaceholderColor: lighten(@inputColor, 75);
-@inputPlaceholderFocusColor: lighten(@inputColor, 45);
+@inputPlaceholderColor: lighten(@inputColor, 20);
+@inputPlaceholderFocusColor: lighten(@inputColor, 5);
 
 /* Line Height Default For Inputs in Browser */
 @inputLineHeight: 1.2142em;
