@@ -23,7 +23,6 @@
           </option>
         </select>
       </div>
-
       <button :id="event.id" v-on:click="editEvent">{{editingEvent[event.id] ? "Done" : "Edit"}}</button>
       <br> </br>
     </div>
@@ -64,9 +63,6 @@
     event_products.forEach(function (product, index, array){
       for (let i = 0; i < all_products.length; i++){
         if (all_products[i].id == product.id){
-////            console.log("changed " + product + " to " + all_products[i])
-//          console.log(product)
-//          console.log(all_products[i])
           array[index] = all_products[i]
         }
       }
@@ -76,39 +72,38 @@
   export default {
     /* global localStorage:true */
     data () {
-      // Receive product list from server
-      this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/products/', {
+      // get user farm id
+      this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/auth/user', {
         headers: {
           Authorization: localStorage.getItem('id_token')
         }
-      }).then(function successCallback (prod_response) {
-        // save product list
-        this.products = prod_response.body
-        // get user farm id
-        this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/auth/user', {
+      }).then(function successCallback (user_info) {
+        // save farm Id
+        farmid = user_info.body['farm']['id']
+        // Get products proposed by farm
+        this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farmid, {
           headers: {
             Authorization: localStorage.getItem('id_token')
           }
-        }).then(function successCallback (user_info) {
-          // save farm Id
-          farmid = user_info.body['farm']['id']
+        }).then(function successCallback (prod_response) {
+          this.products = prod_response.body['products']
 
-          // get events associated with this farm
-          this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/?farmId=' + farmid + '&embedded=1').then(function successCallback (farm_events) {
-            let received_events = farm_events.body
-            let prods = this.products
-            received_events.forEach(function (event) {
-              convertEventProdToFullProducts(event.products, prods)
-            })
+        // get events associated with this farm
+        this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/?farmId=' + farmid + '&embedded=1').then(function successCallback (farm_events) {
+          let received_events = farm_events.body
+          let prods = this.products
+          received_events.forEach(function (event) {
+            convertEventProdToFullProducts(event.products, prods)
+          })
 //            received_events[0].products[0] = prods[1]
 //            console.log(received_events[0].products)
-            this.events = received_events
+          this.events = received_events
 //            console.log(prods)
-          }, function errorCallback (response) {
-            // called asynchronously if an error occurs
-            // or server returns response with an error status.
-          })
+        }, function errorCallback (response) {
+          // called asynchronously if an error occurs
+          // or server returns response with an error status.
         })
+      })
       })
       console.log(products)
       return {
