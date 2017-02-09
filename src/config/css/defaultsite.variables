@@ -47,11 +47,11 @@
     Brand Colors
 --------------------*/
 
-@primaryColor        : @black;
-@secondaryColor      : @grey;
+@primaryColor        : @green;
+@secondaryColor      : @coral;
 
-@lightPrimaryColor   : @lightBlack;
-@lightSecondaryColor : @lightGrey;
+@lightPrimaryColor   : @lightGreen;
+@lightSecondaryColor : @lightCoral;
 
 /*--------------
   Page Heading
@@ -117,7 +117,7 @@
         Page
 --------------------*/
 
-@pageBackground      : @lightGrey;
+@pageBackground      : @lightGreenLeaf; //lightPink;
 @pageOverflowX       : hidden;
 
 @lineHeight          : 1.4285em;
@@ -192,33 +192,38 @@
 
 /*---  Colors  ---*/
 @red              : #DB2828;
-@orange           : #F2711C;
+@orange           : #ED6856;
 @yellow           : #FBBD08;
-@olive            : #B5CC18;
-@green            : #21BA45;
+@olive            : #3D6E50;
+@green            : #4CAF50;
 @teal             : #00B5AD;
 @blue             : #2185D0;
 @violet           : #6435C9;
 @purple           : #A333C8;
-@pink             : #E03997;
+@pink             : #FB78B5;
 @brown            : #A5673F;
 @grey             : #767676;
 @black            : #1B1C1D;
+@coral            : #ED6856;
+
 
 /*---  Light Colors  ---*/
 @lightRed         : #FF695E;
 @lightOrange      : #FF851B;
-@lightYellow      : #FFE21F;
-@lightOlive       : #D9E778;
-@lightGreen       : #2ECC40;
+@lightYellow      : #FFE21F; //D9E778
+@lightOlive       : #88B782;
+@lightGreen       : #AED581;
 @lightTeal        : #6DFFFF;
 @lightBlue        : #54C8FF;
 @lightViolet      : #A291FB;
 @lightPurple      : #DC73FF;
-@lightPink        : #FF8EDF;
+@lightPink        : #FFB9B9;
 @lightBrown       : #D67C1C;
 @lightGrey        : #DCDDDE;
 @lightBlack       : #545454;
+@lightGreenLeaf   : #C5E1A5;
+@lightCoral       : #FEB0AD;
+@lighterCoral     : #FAD6D1;
 
 /*---   Neutrals  ---*/
 @fullBlack        : #000000;
