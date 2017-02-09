@@ -40,7 +40,7 @@
   import Vue from 'vue'
 
   function getProductsID(products){
-    let productsID
+    let productsID = new Array()
     products.forEach(function (product){
       productsID.push(product.id)
     });
@@ -95,8 +95,6 @@
           received_events.forEach(function (event) {
             convertEventProdToFullProducts(event.products, prods)
           })
-//            received_events[0].products[0] = prods[1]
-//            console.log(received_events[0].products)
           this.events = received_events
 //            console.log(prods)
         }, function errorCallback (response) {
@@ -119,7 +117,6 @@
       editEvent: function (event) {
         let vue_event_id
         vue_event_id = findVueId(this.events, event.target.id)
-//        console.log(getProductsID(this.events[vue_event_id].products))
         if (this.editingEvent) {
           this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + event.target.id, method: 'PUT',
             headers: {
@@ -129,7 +126,7 @@
               "description": this.events[vue_event_id].description,
               "beginAt": this.events[vue_event_id].beginAt,
               "endAt": this.events[vue_event_id].endAt,
-//              "products": [5, 13]
+              "products": getProductsID(this.events[vue_event_id].products)
             }
           })
         }
