@@ -1,6 +1,6 @@
 <template>
   <div class="eventhome">
-    <div v-for="event in events" :key="event.id">
+    <div v-for="(event, event_index) in events" :key="event.id">
       <h1> Event {{event.id}} </h1>
       <div>
         <input  :disabled="!editingEvent[event.id]" v-model="event.title" placeholder="">
@@ -16,11 +16,12 @@
       </div>
       <h3> Produits </h3>
       <div v-for="(event_product, index) in event.products">
-      <select v-model="event.products[index]" v-if="event.products[index]" :disabled="!editingEvent[event.id]" >
-        <option v-for="product in products" v-bind:value="product">
-          {{product.name}}
-        </option>
-      </select>
+        <!--<h2>{{products}}</h2>-->
+        <select v-if="event.products[index]" v-model="events[event_index].products[index]"  :disabled="!editingEvent[event.id]" >
+          <option v-for="product in products" v-bind:value="product">
+            {{product.name}}
+          </option>
+        </select>
       </div>
 
       <button :id="event.id" v-on:click="editEvent">{{editingEvent[event.id] ? "Done" : "Edit"}}</button>
@@ -31,29 +32,20 @@
 
 
 
+
 <script>
   let farmid
   let events
   let editingEvent = {}
-  let products = null
+  let products
   import Vue from 'vue'
 
   function getProductsID(products){
-    let productsID = new Array();
+    let productsID
     products.forEach(function (product){
       productsID.push(product.id)
     });
     return productsID
-  }
-  // Receives the products from server and stocks them in the products variable
-  function getProducts (context){
-    context.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/products/', {
-      headers: {
-        Authorization: localStorage.getItem('id_token')
-      }
-    }).then(function successCallback (response) {
-      context.products = response.body
-    })
   }
   // Gets a list of events as seen by the browser (a list of objects) and returns the index
   // of the event having Server ID EventIDperServer
@@ -67,26 +59,58 @@
     }
     return null
   }
+
+  function convertEventProdToFullProducts(event_products, all_products){
+    event_products.forEach(function (product, index, array){
+      for (let i = 0; i < all_products.length; i++){
+        if (all_products[i].id == product.id){
+////            console.log("changed " + product + " to " + all_products[i])
+//          console.log(product)
+//          console.log(all_products[i])
+          array[index] = all_products[i]
+        }
+      }
+    })
+    console.log(event_products)
+  }
   export default {
     /* global localStorage:true */
     data () {
       // Receive product list from server
-      getProducts(this)
-      // get user farm id
-      this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/auth/user', {
+      this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/products/', {
         headers: {
           Authorization: localStorage.getItem('id_token')
         }
-      }).then(function successCallback (response) {
-        // save farm Id
-        farmid = response.body['farm']['id']
-        this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/?farmId=' + farmid + '&embedded=1').then(function successCallback (response) {
-          this.events = response.body
-        }, function errorCallback (response) {
-          // called asynchronously if an error occurs
-          // or server returns response with an error status.
+      }).then(function successCallback (prod_response) {
+        // save product list
+        this.products = prod_response.body
+        // get user farm id
+        this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/auth/user', {
+          headers: {
+            Authorization: localStorage.getItem('id_token')
+          }
+        }).then(function successCallback (user_info) {
+          // save farm Id
+          farmid = user_info.body['farm']['id']
+
+          // get events associated with this farm
+          this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/?farmId=' + farmid + '&embedded=1').then(function successCallback (farm_events) {
+            let received_events = farm_events.body
+            let prods = this.products
+            received_events.forEach(function (event) {
+              convertEventProdToFullProducts(event.products, prods)
+            })
+//            received_events[0].products[0] = prods[1]
+//            console.log(received_events[0].products)
+            this.events = received_events
+//            console.log(prods)
+          }, function errorCallback (response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+          })
         })
       })
+      console.log(products)
       return {
         events: [],
         editingTitle: false,
@@ -98,10 +122,9 @@
     },
     methods: {
       editEvent: function (event) {
-          console.log(localStorage.getItem('id_token'))
         let vue_event_id
         vue_event_id = findVueId(this.events, event.target.id)
-        console.log(getProductsID(this.events[vue_event_id].products))
+//        console.log(getProductsID(this.events[vue_event_id].products))
         if (this.editingEvent) {
           this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + event.target.id, method: 'PUT',
             headers: {
@@ -111,7 +134,7 @@
               "description": this.events[vue_event_id].description,
               "beginAt": this.events[vue_event_id].beginAt,
               "endAt": this.events[vue_event_id].endAt,
-              "products": 1
+//              "products": [5, 13]
             }
           })
         }
