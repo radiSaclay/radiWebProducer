@@ -9,14 +9,15 @@
         <input  :disabled="!editingEvent[event.id]" v-model="event.description" placeholder="">
       </div>
       <div>
-        <input  :disabled="!editingEvent[event.id]" v-model="event.beginAt" placeholder="">
+        <h4>Date de Début</h4>
+        <Flatpickr :disabled="!editingEvent[event.id]" v-model="event.beginAt" :options="fpOptionsBeginDate[event_index]"/>
       </div>
       <div>
-        <input :disabled="!editingEvent[event.id]" v-model="event.endAt" placeholder="Date de Fin">
+        <h4>Date de fin</h4>
+        <Flatpickr :disabled="!editingEvent[event.id]" v-model="event.endAt" :options="fpOptionsEndDate[event_index]"/>
       </div>
       <h3> Produits </h3>
       <div v-for="(event_product, index) in event.products">
-        <!--<h2>{{products}}</h2>-->
         <select v-if="event.products[index]" v-model="events[event_index].products[index]"  :disabled="!editingEvent[event.id]" >
           <option v-for="product in products" v-bind:value="product">
             {{product.name}}
@@ -37,7 +38,14 @@
   let events
   let editingEvent = {}
   let products
+  let date
+  let fpOptionsBeginDate
+  let fpOptionsEndDate
   import Vue from 'vue'
+  import moment from 'moment'
+  import VueFlatpickr from 'vue-flatpickr'
+  import 'vue-flatpickr/theme/airbnb.css'
+  Vue.use(VueFlatpickr)
 
   function getProductsID(products){
     let productsID = new Array()
@@ -67,7 +75,24 @@
         }
       }
     })
-    console.log(event_products)
+  }
+
+  function setupDatePickerOption(events){
+      let fpOptionsBeginDate = []
+      let fpOptionsEndDate = []
+      events.forEach(function (event, index, list) {
+        fpOptionsBeginDate[index] = {
+          allowInput: true,
+            enableTime: true,
+            defaultDate: event.beginAt*1000
+        }
+        fpOptionsEndDate[index] = {
+          allowInput: true,
+          enableTime: true,
+          defaultDate: event.endAt*1000
+        }
+      })
+    return [fpOptionsBeginDate, fpOptionsEndDate]
   }
   export default {
     /* global localStorage:true */
@@ -87,7 +112,6 @@
           }
         }).then(function successCallback (prod_response) {
           this.products = prod_response.body['products']
-
         // get events associated with this farm
         this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/?farmId=' + farmid + '&embedded=1').then(function successCallback (farm_events) {
           let received_events = farm_events.body
@@ -96,21 +120,25 @@
             convertEventProdToFullProducts(event.products, prods)
           })
           this.events = received_events
-//            console.log(prods)
+          let options = setupDatePickerOption(received_events)
+          this.fpOptionsBeginDate = setupDatePickerOption(received_events)[0]
+          this.fpOptionsEndDate = setupDatePickerOption(received_events)[1]
         }, function errorCallback (response) {
           // called asynchronously if an error occurs
           // or server returns response with an error status.
         })
       })
       })
-      console.log(products)
       return {
         events: [],
         editingTitle: false,
         editingDescription: false,
         editingBeginDate: false,
         editingEvent,
-        products
+        date,
+        products,
+        fpOptionsBeginDate,
+        fpOptionsEndDate
       }
     },
     methods: {
@@ -124,8 +152,8 @@
             }, body: {
               "title": this.events[vue_event_id].title,
               "description": this.events[vue_event_id].description,
-              "beginAt": this.events[vue_event_id].beginAt,
-              "endAt": this.events[vue_event_id].endAt,
+              "beginAt": moment(this.events[vue_event_id].beginAt).unix(),
+              "endAt": moment(this.events[vue_event_id].endAt).unix(),
               "products": getProductsID(this.events[vue_event_id].products)
             }
           })
