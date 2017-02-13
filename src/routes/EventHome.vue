@@ -27,9 +27,9 @@
           <button v-if="editingEvent[event.id]"  :id="index" v-on:click="removeProduct(event_index,index)">-</button>
         </div>
       </div>
-      <button v-if="editingEvent[event.id]"  :id="event.id" v-on:click="addProduct">+</button>
+      <button v-if="editingEvent[event.id]"  :id="event.id" v-on:click="addProduct(event_index)">+</button>
       <br> </br>
-      <button :id="event.id" v-on:click="editEvent">{{editingEvent[event.id] ? "Save" : "Edit"}}</button>
+      <button :id="event.id" v-on:click="editEvent(event_index)">{{editingEvent[event.id] ? "Save" : "Edit"}}</button>
       <br> </br>
     </div>
   </div>
@@ -51,18 +51,6 @@
       productsID.push(product.id)
     });
     return productsID
-  }
-  // Gets a list of events as seen by the browser (a list of objects) and returns the index
-  // of the event having Server ID EventIDperServer
-  function findVueId(event_list, EventIDperServer) {
-    let vue_event_id
-    for (let event_index=0; event_index < event_list.length; event_index++){
-      if(event_list[event_index].id == EventIDperServer){
-        vue_event_id = event_index
-        return vue_event_id
-      }
-    }
-    return null
   }
 
   function convertEventProdToFullProducts(event_products, all_products){
@@ -145,19 +133,17 @@
     },
     methods: {
 
-      editEvent: function (event) {
-        let vue_event_id
-        vue_event_id = findVueId(this.events, event.target.id)
+      editEvent: function (event_index) {
         if (this.editingEvent) {
           this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + event.target.id, method: 'PUT',
             headers: {
               'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
             }, body: {
-              "title": this.events[vue_event_id].title,
-              "description": this.events[vue_event_id].description,
-              "beginAt": moment(this.events[vue_event_id].beginAt, "DD/MM/YY HH:mm").unix(),
-              "endAt": moment(this.events[vue_event_id].endAt, "DD/MM/YY HH:mm").unix(),
-              "products": getProductsID(this.events[vue_event_id].products)
+              "title": this.events[event_index].title,
+              "description": this.events[event_index].description,
+              "beginAt": moment(this.events[event_index].beginAt, "DD/MM/YY HH:mm").unix(),
+              "endAt": moment(this.events[event_index].endAt, "DD/MM/YY HH:mm").unix(),
+              "products": getProductsID(this.events[event_index].products)
             }
           })
         }
@@ -165,10 +151,8 @@
         // Needs to be done like this so Vue can detect changes and update the DOM
         this.$set(editingEvent, event.target.id, !editingEvent[event.target.id])
       },
-      addProduct: function (event) {
-        let vue_event_id
-        vue_event_id = findVueId(this.events, event.target.id)
-        this.events[vue_event_id].products.push(this.products[0])
+      addProduct: function (event_index) {
+        this.events[event_index].products.push(this.products[0])
       },
       removeProduct: function (event_index,index) {
         this.events[event_index].products.splice(index,1)
