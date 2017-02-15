@@ -1,36 +1,36 @@
 <template xmlns:v-bind="http://www.w3.org/1999/xhtml">
   <div class="eventhome">
     <button  v-on:click="addEvent()">+</button>
-    <div v-for="(event, event_index) in events" :key="event.id">
+    <div v-for="(event, event_index) in events" :key="event_index">
       <h1> Event {{event.id}} </h1>
       <div>
-        <input  :disabled="!editingEvent[event.id]" v-model="event.title" placeholder="">
+        <input  :disabled="!editingEvent[event_index]" v-model="event.title" placeholder="">
       </div>
       <div>
-        <input  :disabled="!editingEvent[event.id]" v-model="event.description" placeholder="">
+        <input  :disabled="!editingEvent[event_index]" v-model="event.description" placeholder="">
       </div>
       <div>
         <h4>Date de Début</h4>
-        <Flatpickr :disabled="!editingEvent[event.id]" v-model="event.beginAt" :options="fpOptionsBeginDate[event_index]"></Flatpickr>
+        <Flatpickr :disabled="!editingEvent[event_index]" v-model="event.beginAt" :options="fpOptionsBeginDate[event_index]"></Flatpickr>
       </div>
       <div>
         <h4>Date de fin</h4>
-        <Flatpickr :disabled="!editingEvent[event.id]" v-model="event.endAt" :options="fpOptionsEndDate[event_index]"></Flatpickr>
+        <Flatpickr :disabled="!editingEvent[event_index]" v-model="event.endAt" :options="fpOptionsEndDate[event_index]"></Flatpickr>
       </div>
       <div>
         <h3> Produits </h3>
         <div v-for="(event_product, index) in event.products">
-          <select v-if="event.products[index]" v-model="events[event_index].products[index]"  :disabled="!editingEvent[event.id]" >
+          <select v-if="event.products[index]" v-model="events[event_index].products[index]"  :disabled="!editingEvent[event_index]" >
             <option v-for="product in products" v-bind:value="product">
               {{product.name}}
             </option>
           </select>
-          <button v-if="editingEvent[event.id]"  :id="index" v-on:click="removeProduct(event_index,index)">-</button>
+          <button v-if="editingEvent[event_index]"  :id="index" v-on:click="removeProduct(event_index,index)">-</button>
         </div>
       </div>
-      <button v-if="editingEvent[event.id]"  :id="event.id" v-on:click="addProduct(event_index)">+</button>
+      <button v-if="editingEvent[event_index]"  :id="event_index" v-on:click="addProduct(event_index)">+</button>
       <br> </br>
-      <button :id="event.id" v-on:click="editEvent(event_index)">{{editingEvent[event.id] ? "Save" : "Edit"}}</button>
+      <button :id="event_index" v-on:click="editEvent(event_index)">{{editingEvent[event_index] ? "Save" : "Edit"}}</button>
       <br> </br>
     </div>
   </div>
@@ -138,22 +138,42 @@
     },
     methods: {
       editEvent: function (event_index) {
-        if (this.editingEvent) {
-          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + event.target.id, method: 'PUT',
-            headers: {
-              'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
-            }, body: {
-              "title": this.events[event_index].title,
-              "description": this.events[event_index].description,
-              "beginAt": moment(this.events[event_index].beginAt, "DD/MM/YY HH:mm").unix(),
-              "endAt": moment(this.events[event_index].endAt, "DD/MM/YY HH:mm").unix(),
-              "products": getProductsID(this.events[event_index].products)
-            }
-          })
+        if (this.editingEvent[event_index]) {
+          if(this.events[event_index].id != null){
+            this.$http({
+              url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + this.events[event_index].id,
+              method: 'PUT',
+              headers: {
+                'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
+              },
+              body: {
+                "title": this.events[event_index].title,
+                "description": this.events[event_index].description,
+                "beginAt": moment(this.events[event_index].beginAt, "DD/MM/YY HH:mm").unix(),
+                "endAt": moment(this.events[event_index].endAt, "DD/MM/YY HH:mm").unix(),
+                "products": getProductsID(this.events[event_index].products)
+              }
+            })
+          }else {
+            this.postEvent(event_index)
+          }
         }
-        // Replaces element in array, splice syntax = (begin, who many to delete, what to insert)
+        // Replaces element in array, splice syntax = (begin, how many to delete, what to insert)
         // Needs to be done like this so Vue can detect changes and update the DOM
-        this.$set(editingEvent, event.target.id, !editingEvent[event.target.id])
+        this.$set(editingEvent, event_index, !editingEvent[event_index])
+      },
+      postEvent: function (event_index) {
+        this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/', method: 'POST',
+          headers: {
+            'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
+          }, body: {
+            "title": this.events[event_index].title,
+            "description": this.events[event_index].description,
+            "beginAt": moment(this.events[event_index].beginAt, "DD/MM/YY HH:mm").unix(),
+            "endAt": moment(this.events[event_index].endAt, "DD/MM/YY HH:mm").unix(),
+            "products": getProductsID(this.events[event_index].products)
+          }
+        })
       },
       addProduct: function (event_index) {
         // Add the first product of the farm to the event
@@ -166,16 +186,16 @@
       addEvent: function () {
         // Removing event with index "index"
         let new_event = {
-            id: -1,
-            publishAt: 0,
             title: '',
-            beginAt: "01",
-            endAt: "01",
+            beginAt: moment().unix().toString(),
+            endAt: (moment().unix() + 60*60*24*7).toString(), // set to to 7 days from now
             description: '',
             farmId: this.farmId,
             products: []
         }
-        this.events.push(new_event)
+        // push returns the new length of the array
+        let new_length = this.events.push(new_event)
+        this.$set(editingEvent, new_length-1, !editingEvent[new_length-1])
       }
     }
   }
