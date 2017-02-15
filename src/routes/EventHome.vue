@@ -1,5 +1,6 @@
 <template xmlns:v-bind="http://www.w3.org/1999/xhtml">
   <div class="eventhome">
+    <button  v-on:click="addEvent()">+</button>
     <div v-for="(event, event_index) in events" :key="event.id">
       <h1> Event {{event.id}} </h1>
       <div>
@@ -110,9 +111,6 @@
               convertEventProdToFullProducts(event.products, prods)
             })
             this.events = received_events
-            let options = setupDatePickerOption(received_events)
-            this.fpOptionsBeginDate = setupDatePickerOption(received_events)[0]
-            this.fpOptionsEndDate = setupDatePickerOption(received_events)[1]
           }, function errorCallback (response) {
             // called asynchronously if an error occurs
             // or server returns response with an error status.
@@ -127,12 +125,18 @@
         editingEvent,
         date,
         products,
-        fpOptionsBeginDate,
-        fpOptionsEndDate
+
+      }
+    },
+    computed: {
+      fpOptionsBeginDate: function(){
+          return setupDatePickerOption(this.events)[0]
+      },
+      fpOptionsEndDate: function(){
+        return setupDatePickerOption(this.events)[1]
       }
     },
     methods: {
-
       editEvent: function (event_index) {
         if (this.editingEvent) {
           this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + event.target.id, method: 'PUT',
@@ -152,10 +156,26 @@
         this.$set(editingEvent, event.target.id, !editingEvent[event.target.id])
       },
       addProduct: function (event_index) {
+        // Add the first product of the farm to the event
         this.events[event_index].products.push(this.products[0])
       },
       removeProduct: function (event_index,index) {
+        // Removing event with index "index"
         this.events[event_index].products.splice(index,1)
+      },
+      addEvent: function () {
+        // Removing event with index "index"
+        let new_event = {
+            id: -1,
+            publishAt: 0,
+            title: '',
+            beginAt: "01",
+            endAt: "01",
+            description: '',
+            farmId: this.farmId,
+            products: []
+        }
+        this.events.push(new_event)
       }
     }
   }
