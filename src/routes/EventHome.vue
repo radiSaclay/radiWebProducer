@@ -112,7 +112,7 @@
               setupDatePickerOption(event)
             })
 
-            this.events = received_events
+            this.events = received_events.reverse()
           }, function errorCallback (response) {
             // called asynchronously if an error occurs
             // or server returns response with an error status.
@@ -196,7 +196,7 @@
         }
         setupDatePickerOption(new_event)
         // push returns the new length of the array
-        let new_length = this.events.push(new_event)
+        let new_length = this.events.unshift(new_event)
         this.$set(editingEvent, new_length-1, !editingEvent[new_length-1])
       }
     }
