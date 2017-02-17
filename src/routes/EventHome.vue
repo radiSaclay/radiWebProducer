@@ -35,7 +35,8 @@
       </div>
       <button v-if="event.being_edited" :id="event_index" v-on:click="addProduct(event_index)">+</button>
       <br> </br>
-      <button :id="event_index" v-on:click="editEvent(event_index)">{{event.being_edited ? "Enregistrer" : "Editer"}}</button>
+      <button v-on:click="editEvent(event_index)">{{event.being_edited ? "Enregistrer" : "Editer"}}</button>
+      <button v-on:click="removeEvent(event_index)">Supprimer</button>
       <br> </br>
     </div>
   </div>
@@ -194,11 +195,10 @@
         this.events[event_index].products.push(this.farm_products[0])
       },
       removeProduct: function (event_index,index) {
-        // Removing event with index "index"
+        // Removing product with index "index"
         this.events[event_index].products.splice(index,1)
       },
       addEvent: function () {
-        // Removing event with index "index"
         let new_event = {
           title: '',
           beginAt: moment().unix().toString(),
@@ -211,6 +211,21 @@
         new_event.being_edited = true
         // push returns the new length of the array
         let new_length = this.events.unshift(new_event)
+      },
+      removeEvent: function (event_index) {
+        // Removing event with index "event_index"
+        this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + this.events[event_index].id, method: 'DELETE',
+          headers: {
+            'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
+          }
+        }).then(function (success) {
+            this.events.splice(event_index,1)
+            console.log(response)
+        },
+        function (error) {
+
+        })
+
       }
     }
   }
