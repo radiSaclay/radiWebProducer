@@ -98,9 +98,9 @@
   }
 
   function adaptEvent(event, farm_products){
-      convertEventProdToFullProducts(event, farm_products)
-      setupDatePickerOption(event)
-      event.being_edited = false
+    convertEventProdToFullProducts(event, farm_products)
+    setupDatePickerOption(event)
+    event.being_edited = false
   }
 
 
@@ -122,7 +122,6 @@
           }
         }).then(function successCallback (prod_response) {
           this.farm_products = prod_response.body['products']
-
           // get events associated with this farm
           this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/?farm_id=' + farm_id + '&embedded=1').then(function successCallback (farm_events) {
             let received_events = farm_events.body
@@ -131,11 +130,14 @@
               adaptEvent(event, prods)
             })
             this.events = received_events.reverse()
-          }, function errorCallback (response) {
-            // called asynchronously if an error occurs
-            // or server returns response with an error status.
+          }, function errorCallback (error_getting_farm_events) {
+            console.log("Error getting farm events: " + error_getting_farm_events)
           })
+        }, function (error_getting_farm_products) {
+          console.log("Error getting farm products: " + error_getting_farm_products)
         })
+      }, function (error_getting_user_info) {
+        console.log("Error getting user info: " + error_getting_user_info)
       })
       return {
         events: [],
@@ -160,12 +162,12 @@
                 "products": getProductsID(this.events[event_index].products)
               }
             }).then(function (success_resp) {
-                if(success_resp.status==200){
-                  console.log("All good")
-                }
+                  // TODO: put a visual sign that it was successful
               },
               function (error_resp) {
-                console.log("Crap")
+                console.log("Error editing event")
+                console.log(error_resp)
+                // TODO: put a visual sign that it was NOT successful
               })
           }else {
             this.postEvent(event_index)
@@ -221,10 +223,10 @@
         }).then(function (success) {
             this.events.splice(event_index,1)
             console.log(response)
-        },
-        function (error) {
+          },
+          function (error) {
 
-        })
+          })
 
       }
     }
