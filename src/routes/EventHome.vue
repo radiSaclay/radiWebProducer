@@ -132,8 +132,9 @@
     },
     methods: {
       editEvent: function (event_index) {
+        // If is being edited and is not a new event, continue with PUT, else if is new do a POST
         if (this.events[event_index].being_edited) {
-          if(this.events[event_index].id != null){
+          if(!this.events[event_index].isNewEvent){
             this.$http({
               url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + this.events[event_index].id,
               method: 'PUT',
@@ -174,8 +175,11 @@
             "endAt": moment(this.events[event_index].endAt, "DD/MM/YY HH:mm").unix(),
             "products": api.getProductsID(this.events[event_index].products)
           }
-        }).then(function (response) {
-          console.log(response)
+        }).then(function (success) {
+            console.log('Success')
+        }, function (error) {
+          console.log('Failed')
+          console.log(error)
         })
       },
       addProduct: function (event_index) {
@@ -197,6 +201,7 @@
         }
         adaptEvent(new_event, this.farm_products)
         new_event.being_edited = true
+        new_event.isNewEvent = true
         // push returns the new length of the array
         let new_length = this.events.unshift(new_event)
       },
