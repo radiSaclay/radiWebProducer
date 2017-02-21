@@ -1,29 +1,29 @@
 <template>
-  <div v-if="farm" class="farmhome">
-    <h1>Ma Ferme</h1>
+  <div class="farmhome">
     <div>
-      <input :disabled="!farm.being_edited" v-model="farm.name" placeholder="Nom">
+      <input  :disabled="!editingName" v-model="name" placeholder="">
+      <button v-on:click="editName">{{editingName ? "Done" : "Edit"}}</button>
     </div>
     <div>
-      <input  :disabled="!farm.being_edited" v-model="farm.address" placeholder="Adresse">
+      <input  :disabled="!editingAddress" v-model="address" placeholder="">
+      <button v-on:click="editAddress">{{editingAddress ? "Done" : "Edit"}}</button>
     </div>
     <div>
-      <input  :disabled="!farm.being_edited" v-model="farm.email" placeholder="Email">
+      <input  :disabled="!editingEmail" v-model="email" placeholder="">
+      <button v-on:click="editEmail">{{editingEmail ? "Done" : "Edit"}}</button>
     </div>
     <div>
-      <input  :disabled="!farm.being_edited" v-model="farm.phone" placeholder="Phone">
+      <input  :disabled="!editingPhone" v-model="phone" placeholder="">
+      <button v-on:click="editPhone">{{editingPhone ? "Done" : "Edit"}}</button>
     </div>
-    <div>
-      <input  :disabled="!farm.being_edited" v-model="farm.website" placeholder="Website">
-    </div>
-    <button v-on:click="editFarmInfo">{{farm.being_edited ? "Enregistrer" : "Editer"}}</button>
   </div>
+
 </template>
 
 
 
 <script>
-  let farm_id, farm
+  let farmid
   export default {
     /* global localStorage:true */
     data () {
@@ -32,13 +32,14 @@
           Authorization: localStorage.getItem('id_token')
         }
       }).then(function successCallback (response) {
-        farm_id = response.body['farm']['id']
-        this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farm_id).then(function successCallback (response) {
+        farmid = response.body['farm']['id']
+        this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farmid).then(function successCallback (response) {
           // this callback will be called asynchronously
           // when the response is available
-          this.farm = response.body
-          // Needs to be declare like this to be reactive
-          this.$set(this.farm, 'being_edited', false)
+          this.name = response.body['name']
+          this.address = response.body['address']
+          this.email = response.body['email']
+          this.phone = response.body['phone']
         }, function errorCallback (response) {
           // called asynchronously if an error occurs
           // or server returns response with an error status.
@@ -46,25 +47,65 @@
         })
       })
       return {
-        farm
+        name: '',
+        address: '',
+        email: '',
+        phone: '',
+        show: false,
+        editingName: false,
+        editingAddress: false,
+        editingEmail: false,
+        editingPhone: false
       }
     },
     methods: {
-      editFarmInfo: function () {
-        if (this.farm.being_edited) {
-          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farm_id, method: 'PUT',
+      editName: function () {
+        if (this.editingName) {
+          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farmid, method: 'PUT',
             headers: {
               'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
             }, body: {
-              "name": this.farm.name,
-              "website": this.farm.website,
-              "address": this.farm.address,
-              "phone": this.farm.phone,
-              "email": this.farm.email
+              "name": this.name
             }
           })
         }
-        this.farm.being_edited = !this.farm.being_edited
+        this.editingName = !this.editingName
+      },
+      editAddress: function () {
+        if (this.editingAddress) {
+          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farmid, method: 'PUT',
+            headers: {
+              'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
+            }, body: {
+              "address": this.address
+            }
+          })
+        }
+        this.editingAddress = !this.editingAddress
+      },
+      editEmail: function () {
+        if (this.editingEmail) {
+          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farmid, method: 'PUT',
+            headers: {
+              'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
+            }, body: {
+              "email": this.email
+            }
+          })
+        }
+        this.editingEmail = !this.editingEmail
+      },
+      editPhone: function () {
+        if (this.editingPhone) {
+          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farmid, method: 'PUT',
+            headers: {
+              'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
+            }, body: {
+              "phone": this.phone
+            }
+          })
+        }
+        this.editingPhone = !this.editingPhone
       }
     }
   }
@@ -72,3 +113,8 @@
 
 
 
+<style scoped>
+  .farmhome input {
+    display: inline-block;
+  }
+</style>
