@@ -52,6 +52,7 @@
   import VueFlatpickr from 'vue-flatpickr'
   import 'vue-flatpickr/theme/airbnb.css'
   import * as api from '../api/general'
+  import settings from '../config/settings'
   Vue.use(VueFlatpickr)
   let farm_id, events, farm_products
 
@@ -94,7 +95,7 @@
     /* global localStorage:true */
     data () {
       // get user farm id
-      this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/auth/user', {
+      this.$http.get(settings.urls.USER_INFO_URL, {
         headers: {
           Authorization: localStorage.getItem('id_token')
         }
@@ -102,14 +103,14 @@
         // save farm Id
         farm_id = user_info.body['farm']['id']
         // Get products proposed by farm
-        this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farm_id, {
+        this.$http.get(settings.urls.FARMS_URL + farm_id, {
           headers: {
             Authorization: localStorage.getItem('id_token')
           }
         }).then(function successCallback (prod_response) {
           this.farm_products = prod_response.body['products']
           // get events associated with this farm
-          this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/?farm_id=' + farm_id + '&embedded=1').then(function successCallback (farm_events) {
+          this.$http.get(settings.urls.EVENTS_URL + '?farm_id=' + farm_id + '&embedded=1').then(function successCallback (farm_events) {
             let received_events = farm_events.body
             let prods = this.farm_products
             received_events.forEach(function (event) {
@@ -136,7 +137,7 @@
         if (this.events[event_index].being_edited) {
           if(!this.events[event_index].isNewEvent){
             this.$http({
-              url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + this.events[event_index].id,
+              url: settings.urls.EVENTS_URL + this.events[event_index].id,
               method: 'PUT',
               headers: {
                 'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
@@ -165,7 +166,7 @@
         this.events[event_index].being_edited = !this.events[event_index].being_edited
       },
       postEvent: function (event_index) {
-        this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/', method: 'POST',
+        this.$http({url: settings.urls.EVENTS_URL, method: 'POST',
           headers: {
             'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
           }, body: {
@@ -207,7 +208,7 @@
       },
       removeEvent: function (event_index) {
         // Removing event with index "event_index"
-        this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/events/' + this.events[event_index].id, method: 'DELETE',
+        this.$http({url: settings.urls.EVENTS_URL + this.events[event_index].id, method: 'DELETE',
           headers: {
             'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
           }

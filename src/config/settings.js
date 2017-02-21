@@ -7,7 +7,10 @@ const settings = {
   urls: {
     AUTH_URL: SERVEUR_ROOT + 'auth/',
     LOGIN_URL: SERVEUR_ROOT + 'auth/login',
-    HOMEPAGE: '/farmhome'
+    HOMEPAGE: '/farmhome',
+    EVENTS_URL: SERVEUR_ROOT + '/api/events/',
+    FARMS_URL: SERVEUR_ROOT + '/api/farms/',
+    USER_INFO_URL: SERVEUR_ROOT + '/auth/user'
   }
 }
 
