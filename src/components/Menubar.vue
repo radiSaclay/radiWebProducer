@@ -3,8 +3,6 @@
     <div class="ui container">
       <router-link to="/farmhome" class="item" v-if="user.authenticated">Ma Ferme</router-link>
       <router-link to="/eventhome" class="item" v-if="user.authenticated">Mes Evenements</router-link>
-      <router-link to="/home" class="item" v-if="user.authenticated">Voir mes annonces</router-link>
-      <router-link to="/send-notif" class="item" v-if="user.authenticated">Poster une annonce</router-link>
       <a v-on:click='logout' class="item" v-if="user.authenticated">Se déconnecter</a>
       <router-link to="/" class="item" v-if="!user.authenticated">Se connecter</router-link>
     </div>
