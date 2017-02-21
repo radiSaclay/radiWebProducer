@@ -27,6 +27,7 @@
 
 <script>
   import auth from '../Auth'
+  import settings from '../config/settings'
 
   export default {
     name: 'login',
@@ -45,7 +46,7 @@
     },
     methods: {
       submit: function () {
-        auth.login(this, this.credentials, '/eventhome')
+        auth.login(this, this.credentials, settings.urls.HOMEPAGE)
         this.attempted = true // tells if the user as already attempted to connect
       },
       // TODO replace by a method that resets the password
