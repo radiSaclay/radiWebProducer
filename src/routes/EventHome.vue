@@ -51,28 +51,9 @@
   import moment from 'moment'
   import VueFlatpickr from 'vue-flatpickr'
   import 'vue-flatpickr/theme/airbnb.css'
+  import * as api from '../api/general'
   Vue.use(VueFlatpickr)
   let farm_id, events, farm_products
-
-  // gets an array of products and returns an array of IDs of the products
-  function getProductsID(products){
-    let productsID = []
-    products.forEach(function (product){
-      productsID.push(product.id)
-    });
-    return productsID
-  }
-
-  // replaces the products from events by more complete objects from the list of products of the farm
-  function convertEventProdToFullProducts(event, all_products){
-    event.products.forEach(function (product, index, array){
-      for (let i = 0; i < all_products.length; i++){
-        if (all_products[i].id == product.id){
-          array[index] = all_products[i]
-        }
-      }
-    })
-  }
 
   // Receives a list of events and creates a field for each one with the options used by the DatePicker
   // Also converts the date to human readable format
@@ -98,7 +79,7 @@
   }
 
   function adaptEvent(event, farm_products){
-    convertEventProdToFullProducts(event, farm_products)
+    api.convertEventProdToFullProducts(event, farm_products)
     setupDatePickerOption(event)
     event.being_edited = false
   }
@@ -159,7 +140,7 @@
                 "description": this.events[event_index].description,
                 "beginAt": moment(this.events[event_index].beginAt, "DD/MM/YY HH:mm").unix(),
                 "endAt": moment(this.events[event_index].endAt, "DD/MM/YY HH:mm").unix(),
-                "products": getProductsID(this.events[event_index].products)
+                "products": api.getProductsID(this.events[event_index].products)
               }
             }).then(function (success_resp) {
                   // TODO: put a visual sign that it was successful
@@ -186,7 +167,7 @@
             "description": this.events[event_index].description,
             "beginAt": moment(this.events[event_index].beginAt, "DD/MM/YY HH:mm").unix(),
             "endAt": moment(this.events[event_index].endAt, "DD/MM/YY HH:mm").unix(),
-            "products": getProductsID(this.events[event_index].products)
+            "products": api.getProductsID(this.events[event_index].products)
           }
         }).then(function (response) {
           console.log(response)
