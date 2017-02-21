@@ -78,6 +78,11 @@
     }
   }
 
+  // When an event comes from the server its products cant be bound using Vue-js' v-bind to
+  // the full list of farm proposed products because they have different fields (different level of detail)
+  // This function converts the "event" products into "farm_products" by matching and replacing them
+  // it also adds the necessary configuration fields needed by the DatePicker for more info see setupDatePickerOption
+  // function
   function adaptEvent(event, farm_products){
     api.convertEventProdToFullProducts(event, farm_products)
     setupDatePickerOption(event)
