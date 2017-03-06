@@ -15,6 +15,7 @@
     "updatesemantic" : "copyfiles -f src/config/css/theme.config node_modules/semantic-ui-less ; copyfiles -f src/config/css/site.variables ./node_modules/semantic-ui-less/themes/default/globals"
   },
   "dependencies": {
+    "moment": "^2.17.1",
     "copyfiles": "^1.2.0",
     "css-loader": "^0.25.0",
     "jquery": "^3.1.1",
@@ -23,6 +24,7 @@
     "semantic-ui-less": "^2.2.4",
     "style-loader": "^0.13.1",
     "vue": "^2.1.9",
+    "vue-flatpickr": "^2.2.9",
     "vue-resource": "^1.0.3",
     "vue-router": "^2.1.1"
   },

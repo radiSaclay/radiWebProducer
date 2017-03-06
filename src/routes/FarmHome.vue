@@ -1,4 +1,4 @@
-<template xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<template>
   <div class="ui three column centered grid">
     <div class="column">
       <div class="ui equal width form">

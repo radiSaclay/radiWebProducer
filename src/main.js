@@ -16,6 +16,7 @@ require('!style!css!less!./config/css/semantic.less')
 // initialization of the router
 Vue.use(VueResource)
 Vue.use(VueRouter)
+Vue.config.debug = true;
 
 const router = new VueRouter({
   routes: routes.routes
