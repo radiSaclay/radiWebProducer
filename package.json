@@ -12,9 +12,10 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs",
     "start": "node server.js",
     "postinstall": "npm run updatesemantic",
-    "updatesemantic": "cp ./src/config/css/theme.config ./node_modules/semantic-ui-less/theme.config ; cp ./src/config/css/defaultsite.variables ./node_modules/semantic-ui-less/themes/default/globals/site.variables"
+    "updatesemantic" : "copyfiles -f src/config/css/theme.config node_modules/semantic-ui-less ; copyfiles -f src/config/css/site.variables ./node_modules/semantic-ui-less/themes/default/globals"
   },
   "dependencies": {
+    "copyfiles": "^1.2.0",
     "css-loader": "^0.25.0",
     "jquery": "^3.1.1",
     "less": "^2.7.2",
