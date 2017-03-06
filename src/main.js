@@ -11,12 +11,12 @@ import VueRouter from 'vue-router'
 import routes from './routes/routes'
 import VueResource from 'vue-resource'
 
+require('!style!css!less!./config/css/semantic.less')
+
 // initialization of the router
 Vue.use(VueResource)
 Vue.use(VueRouter)
 Vue.config.debug = true;
-
-require('./config/css/main.css')
 
 const router = new VueRouter({
   routes: routes.routes

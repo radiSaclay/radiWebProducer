@@ -1,10 +1,11 @@
-<template xmlns:v-on="http://www.w3.org/1999/xhtml">
-  <div class="ui fixed inverted menu">
+
+<template>
+  <div class="ui olive top fixed inverted menu">
     <div class="ui container">
       <router-link to="/farmhome" class="item" v-if="user.authenticated">Ma Ferme</router-link>
       <router-link to="/eventhome" class="item" v-if="user.authenticated">Mes Evenements</router-link>
       <a v-on:click='logout' class="item" v-if="user.authenticated">Se déconnecter</a>
-      <router-link to="/" class="item" v-if="!user.authenticated">Se connecter</router-link>
+      <router-link to="/" class="header item" v-if="!user.authenticated">Se connecter</router-link>
     </div>
   </div>
 </template>

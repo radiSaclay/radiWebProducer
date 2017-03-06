@@ -1,23 +1,43 @@
 <template>
-  <div class="farmhome">
-    <div>
-      <input  :disabled="!editingName" v-model="name" placeholder="">
-      <button v-on:click="editName">{{editingName ? "Done" : "Edit"}}</button>
-    </div>
-    <div>
-      <input  :disabled="!editingAddress" v-model="address" placeholder="">
-      <button v-on:click="editAddress">{{editingAddress ? "Done" : "Edit"}}</button>
-    </div>
-    <div>
-      <input  :disabled="!editingEmail" v-model="email" placeholder="">
-      <button v-on:click="editEmail">{{editingEmail ? "Done" : "Edit"}}</button>
-    </div>
-    <div>
-      <input  :disabled="!editingPhone" v-model="phone" placeholder="">
-      <button v-on:click="editPhone">{{editingPhone ? "Done" : "Edit"}}</button>
+  <div class="ui three column centered grid">
+    <div class="column">
+      <div class="ui equal width form">
+
+        <div class="field">
+          <label>Nom de la ferme</label>
+          <div class="ui input">
+            <input :disabled="!editingName" v-model="name" placeholder="">
+            <button class="ui primary button" v-on:click="editName">{{editingName ? "Done" : "Edit"}}</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Description</label>
+          <div class="ui input">
+            <textarea rows="2" :disabled="!editingAddress" v-model="address" placeholder=""></textarea>
+            <button class="ui primary button" v-on:click="editAddress">{{editingAddress ? "Done" : "Edit"}}</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Adresse email</label>
+          <div class="ui input">
+            <input :disabled="!editingEmail" v-model="email" placeholder="">
+            <button class="ui primary button" v-on:click="editEmail">{{editingEmail ? "Done" : "Edit"}}</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Numéro de téléphone</label>
+          <div class="ui input">
+            <input :disabled="!editingPhone" v-model="phone" placeholder="">
+            <button class="ui primary button" v-on:click="editPhone">{{editingPhone ? "Done" : "Edit"}}</button>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
-
 </template>
 
 

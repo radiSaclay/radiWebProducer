@@ -1,5 +1,6 @@
 <template>
-  <div class="login">
+  <div class="ui center aligned one column grid">
+    <div class="column">
     <br>
     <div class="ui left icon input">
       <input type="text" name="email" placeholder="adresse e-mail" v-model="credentials.email">
@@ -13,15 +14,16 @@
     </div>
     <br>
     <br>
-    <button class="ui black button" tabindex="0" v-on:click="submit">Connexion</button>
+    <button class="ui primary button" tabindex="0" v-on:click="submit">Connexion</button>
     <br>
     <br>
     <div class="ui error compact message" v-if="attempted"> identifiants incorrects</div>
     <br>
-    <div class="ui inverted blue basic button" v-on:click="sendPassword">
+    <div class="ui inverted primary basic button" v-on:click="sendPassword">
       <div class="header">mot de passe oublié ?</div>
       <div class="message" v-if="showLoginDetails">identifiants de test {{ loginDetails }}</div>
     </div>
+      </div>
   </div>
 </template>
 
@@ -41,7 +43,7 @@
         },
         // TODO replace by request to reset password
         showLoginDetails: false,
-        loginDetails: {email: 'producer', password: 'radis'}
+        loginDetails: {email: 'teta', password: 'teta'}
       }
     },
     methods: {
