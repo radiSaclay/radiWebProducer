@@ -6,7 +6,7 @@ import farmhome from './FarmHome.vue'
 import eventhome from './EventHome.vue'
 
 const routes = [
-  { path: '/', component: Login },
+  { path: '/', name: 'login', component: Login },
   { path: '/farmhome', component: farmhome },
   { path: '/eventhome', component: eventhome },
 ]
