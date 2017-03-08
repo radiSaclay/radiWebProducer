@@ -162,7 +162,7 @@
                 "products": getProductsID(this.events[event_index].products)
               }
             }).then(function (success_resp) {
-                  // TODO: put a visual sign that it was successful
+                // TODO: put a visual sign that it was successful
               },
               function (error_resp) {
                 console.log("Error editing event")
