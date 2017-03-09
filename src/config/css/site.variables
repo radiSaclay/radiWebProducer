@@ -47,10 +47,10 @@
     Brand Colors
 --------------------*/
 
-@primaryColor        : @green;
+@primaryColor        : @olive;
 @secondaryColor      : @coral;
 
-@lightPrimaryColor   : @lightGreen;
+@lightPrimaryColor   : @lightOlive;
 @lightSecondaryColor : @lightCoral;
 
 /*--------------

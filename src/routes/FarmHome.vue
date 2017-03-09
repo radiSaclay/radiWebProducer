@@ -1,5 +1,5 @@
 <template>
-  <div class="ui three column centered grid">
+  <div class="ui two column centered grid">
     <div class="column">
       <div class="ui equal width form">
 

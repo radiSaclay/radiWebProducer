@@ -1,49 +1,99 @@
 <template>
-  <div class="eventhome">
-    <!-- Button to add new event -->
-    <button  v-on:click="addEvent()">+</button>
-    <!-- For all events ... -->
-    <div v-for="(event, event_index) in events">
-      <h1> Event {{event.id}} </h1>
-      <div>
-        <input :disabled="!event.being_edited" v-model="event.title" placeholder="Title">
+  <div class="ui one column centered grid">
+
+    <div class="column">
+
+      <!-- Button to add new event -->
+      <div class="ui center aligned basic segment">
+        <button class="ui primary button" v-on:click="addEvent()">Créer un nouvel événement</button>
       </div>
-      <div>
-        <input :disabled="!event.being_edited" v-model="event.description" placeholder="Description">
-      </div>
-      <div>
-        <h4>Début</h4>
-        <Flatpickr :disabled="!event.being_edited" v-model="event.beginAt" :options="event.fpOptionsBeginDate"></Flatpickr>
-      </div>
-      <div>
-        <h4>Fin</h4>
-        <Flatpickr :disabled="!event.being_edited" v-model="event.endAt" :options="event.fpOptionsEndDate"></Flatpickr>
-      </div>
-      <div>
-        <h3> Produits </h3>
-        <!-- For each product of this event... -->
-        <div v-for="(event_product, index) in event.products">
-          <!-- Create a dropdown menu with value linked to the current product of the event -->
-          <select v-model="events[event_index].products[index]"  :disabled="!event.being_edited" >
-            <!-- Populate the options of this dropdown menu to be all available farm products -->
-            <option v-for="product in farm_products" v-bind:value="product">
-              {{product.name}}
-            </option>
-          </select>
-          <button v-if="event.being_edited" :id="index" v-on:click="removeProduct(event_index,index)">-</button>
+
+      <!-- For all events ... -->
+      <div class="ui equal width form" v-for="(event, event_index) in events">
+
+        <!-- frame surronding one event ... -->
+        <div class="ui container secondary message">
+
+          <!-- Number of the event ... -->
+          <div class="ui center aligned basic segment"> <h1> Event {{event.id}} </h1></div>
+
+          <!-- Title of the event ... -->
+          <div class="field">
+            <div class="ui labeled input">
+              <div class="ui olive inverted label" style="width:100px">Titre</div>
+              <input :disabled="!event.being_edited" v-model="event.title" placeholder="Title"></input>
+            </div>
+          </div>
+
+          <!-- Description of the event ... -->
+          <div class="field">
+            <div class="ui labeled input">
+              <div class="ui olive inverted label" style="width:100px">Description</div>
+              <textarea rows="2" :disabled="!event.being_edited" v-model="event.description" placeholder="Description"></textarea>
+            </div>
+          </div>
+
+          <!-- Beginning date ... -->
+          <div class="field">
+            <div class="ui labeled input">
+              <div class="ui olive inverted label" style="width:100px">Début</div>
+              <Flatpickr :disabled="!event.being_edited" v-model="event.beginAt" :options="event.fpOptionsBeginDate"></Flatpickr>
+            </div>
+          </div>
+
+          <!-- Ending date ... -->
+          <div class="field">
+            <div class="ui labeled input">
+              <div class="ui olive inverted label" style="width:100px">Fin</div>
+              <Flatpickr :disabled="!event.being_edited" v-model="event.endAt" :options="event.fpOptionsEndDate"></Flatpickr>
+            </div>
+          </div>
+
+          <!-- Products involved ... -->
+          <div class="field">
+            <div class="ui labeled two column input">
+
+              <div class="ui olive inverted label" style="width:100px">Produits</div>
+
+              <!-- For each product of this event... -->
+              <div v-for="(event_product, index) in event.products">
+                <!-- Create a dropdown menu with value linked to the current product of the event -->
+                <div class="column">
+                  <select class="ui search dropdown" v-model="events[event_index].products[index]"  :disabled="!event.being_edited" >
+                    <!-- Populate the options of this dropdown menu to be all available farm products -->
+                    <option v-for="product in farm_products" v-bind:value="product">
+                      {{product.name}}
+                    </option>
+                  </select>
+                  <button class="ui primary icon button" v-if="event.being_edited" :id="index" v-on:click="removeProduct(event_index,index)">
+                    <i class="remove icon">
+                  </button>
+                </div>
+              </div>
+
+              <button class="ui icon primary button" v-if="event.being_edited" :id="event_index" v-on:click="addProduct(event_index)">
+                <i class="add icon"></i>
+              </button>
+
+            </div>
+          </div>
+
+          <!-- Buttons to edit or delete the event ... -->
+          <div class="ui center aligned basic segment">
+            <button class="ui secondary button" v-on:click="editEvent(event_index)">{{event.being_edited ? "Enregistrer" : "Editer"}}</button>
+            <button class="ui secondary button" v-on:click="removeEvent(event_index)">Supprimer</button>
+          </div>
+
+
         </div>
+        <br>
       </div>
-      <button v-if="event.being_edited" :id="event_index" v-on:click="addProduct(event_index)">+</button>
-      <br> </br>
-      <button v-on:click="editEvent(event_index)">{{event.being_edited ? "Enregistrer" : "Editer"}}</button>
-      <button v-on:click="removeEvent(event_index)">Supprimer</button>
-      <br> </br>
+
+
     </div>
   </div>
+
 </template>
-
-
-
 
 <script>
   import Vue from 'vue'
@@ -79,6 +129,7 @@
     }
   }
 
+
   // When an event comes from the server its products cant be bound using Vue-js' v-bind to
   // the full list of farm proposed products because they have different fields (different level of detail)
   // This function converts the "event" products into "farm_products" by matching and replacing them
@@ -90,9 +141,9 @@
     event.being_edited = false
   }
 
-
   export default {
     /* global localStorage:true */
+
     data () {
       // get user farm id
       this.$http.get(settings.urls.USER_INFO_URL, {
@@ -131,6 +182,7 @@
         farm_products
       }
     },
+
     methods: {
       editEvent: function (event_index) {
         // If is being edited and is not a new event, continue with PUT, else if is new do a POST
@@ -217,13 +269,9 @@
             console.log(response)
           },
           function (error) {
-
           })
-
+        }
       }
-    }
+
   }
 </script>
-
-
-
