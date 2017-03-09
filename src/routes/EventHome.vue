@@ -1,10 +1,3 @@
-<!--
-.ui.primary.message {
-  background-color: lighten(@pageBackground,5);
-  color: @primaryColor;
-}
--->
-
 <template>
   <div class="ui one column centered grid">
 
@@ -66,7 +59,7 @@
               <div v-for="(event_product, index) in event.products">
                 <!-- Create a dropdown menu with value linked to the current product of the event -->
                 <div class="column">
-                  <select v-model="events[event_index].products[index]"  :disabled="!event.being_edited" >
+                  <select class="ui search dropdown" v-model="events[event_index].products[index]"  :disabled="!event.being_edited" >
                     <!-- Populate the options of this dropdown menu to be all available farm products -->
                     <option v-for="product in farm_products" v-bind:value="product">
                       {{product.name}}
@@ -136,6 +129,7 @@
     }
   }
 
+
   // When an event comes from the server its products cant be bound using Vue-js' v-bind to
   // the full list of farm proposed products because they have different fields (different level of detail)
   // This function converts the "event" products into "farm_products" by matching and replacing them
@@ -147,12 +141,9 @@
     event.being_edited = false
   }
 
-
   export default {
     /* global localStorage:true */
-    // mounted: function (){
-    //   this.$el.find('.dropdown').dropdown();
-    // },
+
     data () {
       // get user farm id
       this.$http.get(settings.urls.USER_INFO_URL, {
@@ -191,6 +182,7 @@
         farm_products
       }
     },
+
     methods: {
       editEvent: function (event_index) {
         // If is being edited and is not a new event, continue with PUT, else if is new do a POST
@@ -277,10 +269,9 @@
             console.log(response)
           },
           function (error) {
-
           })
-
+        }
       }
-    }
+
   }
 </script>
