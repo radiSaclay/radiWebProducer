@@ -85,7 +85,7 @@
   // it also adds the necessary configuration fields needed by the DatePicker for more info see setupDatePickerOption
   // function
   function adaptEvent(event, farm_products){
-    api.convertEventProdToFullProducts(event, farm_products)
+    api.convertProdToFullProducts(event, farm_products)
     setupDatePickerOption(event)
     event.being_edited = false
   }
