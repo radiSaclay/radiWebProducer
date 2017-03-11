@@ -55,7 +55,7 @@
           </div>
         </div>
         <div class="field">
-        <button class="ui primary button" v-on:click="editFarmInfo">{{farm.being_edited ? "Enregistrer" : "Editer"}}</button>
+          <button class="ui primary button" v-on:click="editFarmInfo">{{farm.being_edited ? "Enregistrer" : "Editer"}}</button>
         </div>
       </div>
     </div>
