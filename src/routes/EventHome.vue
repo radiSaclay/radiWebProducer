@@ -229,7 +229,7 @@
             "products": api.getProductsID(this.events[event_index].products)
           }
         }).then(function (success) {
-            console.log('Success')
+          console.log('Success')
         }, function (error) {
           console.log('Failed')
           console.log(error)
@@ -270,8 +270,8 @@
           },
           function (error) {
           })
-        }
       }
+    }
 
   }
 </script>

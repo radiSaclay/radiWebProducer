@@ -72,7 +72,7 @@
     /* global localStorage:true */
     data () {
       // get user info
-      this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/auth/user', {
+      this.$http.get(settings.urls.USER_INFO_URL, {
         headers: {
           Authorization: localStorage.getItem('id_token')
         }
@@ -80,10 +80,10 @@
         // save farm id
         farm_id = user_info.body['farm']['id']
         // get products
-        this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/products/').then(function successCallback (products_info) {
+        this.$http.get(settings.urls.GET_PRODUCT_URL).then(function successCallback (products_info) {
           console.log(products_info)
           this.all_products = products_info.body
-          this.$http.get('http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farm_id).then(function successCallback (farm_info) {
+          this.$http.get(settings.urls.FARMS_URL + farm_id).then(function successCallback (farm_info) {
             // this callback will be called asynchronously
             // when the response is available
             this.farm = farm_info.body
@@ -109,7 +109,7 @@
     methods: {
       editFarmInfo: function () {
         if (this.farm.being_edited) {
-          this.$http({url: 'http://ec2-52-56-114-123.eu-west-2.compute.amazonaws.com/api/farms/' + farm_id, method: 'PUT',
+          this.$http({url: settings.urls.FARMS_URL + farm_id, method: 'PUT',
             headers: {
               'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
             }, body: {
