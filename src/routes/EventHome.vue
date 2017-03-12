@@ -136,7 +136,7 @@
   // it also adds the necessary configuration fields needed by the DatePicker for more info see setupDatePickerOption
   // function
   function adaptEvent(event, farm_products){
-    api.convertEventProdToFullProducts(event, farm_products)
+    api.convertProdToFullProducts(event, farm_products)
     setupDatePickerOption(event)
     event.being_edited = false
   }
@@ -202,7 +202,7 @@
                 "products": api.getProductsID(this.events[event_index].products)
               }
             }).then(function (success_resp) {
-                  // TODO: put a visual sign that it was successful
+                // TODO: put a visual sign that it was successful
               },
               function (error_resp) {
                 console.log("Error editing event")
@@ -229,7 +229,7 @@
             "products": api.getProductsID(this.events[event_index].products)
           }
         }).then(function (success) {
-            console.log('Success')
+          console.log('Success')
         }, function (error) {
           console.log('Failed')
           console.log(error)
@@ -270,8 +270,8 @@
           },
           function (error) {
           })
-        }
       }
+    }
 
   }
 </script>
