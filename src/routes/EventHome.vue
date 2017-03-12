@@ -51,23 +51,15 @@
 
           <!-- Products involved ... -->
           <div class="field">
-            <div class="ui labeled two column input">
+            <div class="ui labeled input">
 
               <div class="ui olive inverted label" style="width:100px">Produits</div>
 
-              <!-- For each product of this event... -->
-              <div v-for="(event_product, index) in event.products">
-                <!-- Create a dropdown menu with value linked to the current product of the event -->
-                <div class="column">
-                  <select class="ui search dropdown" v-model="events[event_index].products[index]"  :disabled="!event.being_edited" >
-                    <!-- Populate the options of this dropdown menu to be all available farm products -->
-                    <option v-for="product in farm_products" v-bind:value="product">
-                      {{product.name}}
-                    </option>
-                  </select>
-                  <button class="ui primary icon button" v-if="event.being_edited" :id="index" v-on:click="removeProduct(event_index,index)">
-                    <i class="remove icon">
-                  </button>
+              <div class="ui four column grid" style="margin-top:0px">
+                <!-- For each product of this event... -->
+                <div v-for="(event_product, index) in event.products">
+                  <!-- Create a dropdown menu with value linked to the current product of the event -->
+                  <dropdown :suggestions="farm_products" :selection.sync="events[event_index].products[index].name" :isDisabled="!event.being_edited" :product_index="index" :event_index="event_index"></dropdown>
                 </div>
               </div>
 
@@ -77,6 +69,7 @@
 
             </div>
           </div>
+
 
           <!-- Buttons to edit or delete the event ... -->
           <div class="ui center aligned basic segment">
@@ -103,6 +96,7 @@
   import 'vue-flatpickr/theme/airbnb.css'
   import * as api from '../api/general'
   import settings from '../config/settings'
+  import Dropdown from '../components/Dropdown'
   Vue.use(VueFlatpickr)
   let farm_id, events, farm_products
 
@@ -143,6 +137,10 @@
 
   export default {
     /* global localStorage:true */
+
+    components: {
+      Dropdown
+    },
 
     data () {
       // get user farm id
@@ -242,6 +240,9 @@
       removeProduct: function (event_index,index) {
         // Removing product with index "index"
         this.events[event_index].products.splice(index,1)
+      },
+      editProduct: function (event_index,product_index,new_product) {
+        this.events[event_index].products[product_index] = new_product;
       },
       addEvent: function () {
         let new_event = {
