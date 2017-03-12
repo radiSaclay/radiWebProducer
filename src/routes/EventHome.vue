@@ -177,7 +177,7 @@
       })
       return {
         events: [],
-        farm_products,
+        farm_products
       }
     },
 
@@ -217,61 +217,61 @@
       },
       postEvent: function (event_index) {
         this.$http({url: settings.urls.EVENTS_URL, method: 'POST',
+          headers: {
+            'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
+          }, body: {
+            "title": this.events[event_index].title,
+            "description": this.events[event_index].description,
+            "beginAt": moment(this.events[event_index].beginAt, "DD/MM/YY HH:mm").unix(),
+            "endAt": moment(this.events[event_index].endAt, "DD/MM/YY HH:mm").unix(),
+            "products": api.getProductsID(this.events[event_index].products)
+          }
+        }).then(function (success) {
+          console.log('Success')
+        }, function (error) {
+          console.log('Failed')
+          console.log(error)
+        })
+      },
+      addProduct: function (event_index) {
+        // Add the first product of the farm to the event
+        this.events[event_index].products.push(this.farm_products[0])
+      },
+      removeProduct: function (event_index,index) {
+        // Removing product with index "index"
+        this.events[event_index].products.splice(index,1)
+      },
+      editProduct: function (event_index,product_index,new_product) {
+        this.events[event_index].products[product_index] = new_product;
+      },
+      addEvent: function () {
+        let new_event = {
+          title: '',
+          beginAt: moment().unix().toString(),
+          endAt: (moment().unix() + 60*60*24*7).toString(), // set to to 7 days from now by default
+          description: '',
+          farm_id: this.farm_id,
+          products: []
+        }
+        adaptEvent(new_event, this.farm_products)
+        new_event.being_edited = true
+        new_event.isNewEvent = true
+        // push returns the new length of the array
+        let new_length = this.events.unshift(new_event)
+      },
+      removeEvent: function (event_index) {
+        // Removing event with index "event_index"
+        this.$http({url: settings.urls.EVENTS_URL + this.events[event_index].id, method: 'DELETE',
         headers: {
           'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
-        }, body: {
-          "title": this.events[event_index].title,
-          "description": this.events[event_index].description,
-          "beginAt": moment(this.events[event_index].beginAt, "DD/MM/YY HH:mm").unix(),
-          "endAt": moment(this.events[event_index].endAt, "DD/MM/YY HH:mm").unix(),
-          "products": api.getProductsID(this.events[event_index].products)
         }
       }).then(function (success) {
-        console.log('Success')
-      }, function (error) {
-        console.log('Failed')
-        console.log(error)
+        this.events.splice(event_index,1)
+        console.log(response)
+      },
+      function (error) {
       })
-    },
-    addProduct: function (event_index) {
-      // Add the first product of the farm to the event
-      this.events[event_index].products.push(this.farm_products[0])
-    },
-    removeProduct: function (event_index,index) {
-      // Removing product with index "index"
-      this.events[event_index].products.splice(index,1)
-    },
-    editProduct: function (event_index,product_index,new_product) {
-      this.events[event_index].products[product_index] = new_product;
-    },
-    addEvent: function () {
-      let new_event = {
-        title: '',
-        beginAt: moment().unix().toString(),
-        endAt: (moment().unix() + 60*60*24*7).toString(), // set to to 7 days from now by default
-        description: '',
-        farm_id: this.farm_id,
-        products: []
-      }
-      adaptEvent(new_event, this.farm_products)
-      new_event.being_edited = true
-      new_event.isNewEvent = true
-      // push returns the new length of the array
-      let new_length = this.events.unshift(new_event)
-    },
-    removeEvent: function (event_index) {
-      // Removing event with index "event_index"
-      this.$http({url: settings.urls.EVENTS_URL + this.events[event_index].id, method: 'DELETE',
-      headers: {
-        'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
-      }
-    }).then(function (success) {
-      this.events.splice(event_index,1)
-      console.log(response)
-    },
-    function (error) {
-    })
-  }
+    }
   }
 
 }
