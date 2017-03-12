@@ -200,13 +200,13 @@
                 "products": api.getProductsID(this.events[event_index].products)
               }
             }).then(function (success_resp) {
-              // TODO: put a visual sign that it was successful
-            },
-            function (error_resp) {
-              console.log("Error editing event")
-              console.log(error_resp)
-              // TODO: put a visual sign that it was NOT successful
-            })
+                  // TODO: put a visual sign that it was successful
+              },
+              function (error_resp) {
+                console.log("Error editing event")
+                console.log(error_resp)
+                // TODO: put a visual sign that it was NOT successful
+              })
           }else {
             this.postEvent(event_index)
           }
@@ -227,7 +227,7 @@
             "products": api.getProductsID(this.events[event_index].products)
           }
         }).then(function (success) {
-          console.log('Success')
+            console.log('Success')
         }, function (error) {
           console.log('Failed')
           console.log(error)
@@ -262,17 +262,17 @@
       removeEvent: function (event_index) {
         // Removing event with index "event_index"
         this.$http({url: settings.urls.EVENTS_URL + this.events[event_index].id, method: 'DELETE',
-        headers: {
-          'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
+          headers: {
+            'Authorization': localStorage.getItem('id_token'), 'Content-Type': 'application/json'
+          }
+        }).then(function (success) {
+            this.events.splice(event_index,1)
+            console.log(response)
+          },
+          function (error) {
+          })
         }
-      }).then(function (success) {
-        this.events.splice(event_index,1)
-        console.log(response)
-      },
-      function (error) {
-      })
-    }
-  }
+      }
 
-}
+  }
 </script>
