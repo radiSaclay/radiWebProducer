@@ -15,9 +15,12 @@
         <div class="ui container secondary message">
 
           <!-- Number of the event ... -->
-          <div class="ui center aligned basic segment"> <h1> Event {{event.id}} </h1></div>
+          <div class="ui left aligned basic segment" v-on:click="event.show = !event.show"> <h1>{{event.title}}</h1></div>
 
-          <!-- Title of the event ... -->
+          <!--accordion to show full event information-->
+          <div v-if="event.show">
+
+           <!--Title of the event ...-->
           <div class="field">
             <div class="ui labeled input">
               <div class="ui olive inverted label" style="width:100px">Titre</div>
@@ -70,16 +73,15 @@
             </div>
           </div>
 
-
           <!-- Buttons to edit or delete the event ... -->
           <div class="ui center aligned basic segment">
             <button class="ui secondary button" v-on:click="editEvent(event_index)">{{event.being_edited ? "Enregistrer" : "Editer"}}</button>
             <button class="ui secondary button" v-on:click="removeEvent(event_index)">Supprimer</button>
           </div>
 
+          </div>
 
         </div>
-        <br>
       </div>
 
 
@@ -163,6 +165,7 @@
             let received_events = farm_events.body
             let prods = this.farm_products
             received_events.forEach(function (event) {
+              event.show = false
               adaptEvent(event, prods)
             })
             this.events = received_events.reverse()
@@ -251,7 +254,8 @@
           endAt: (moment().unix() + 60*60*24*7).toString(), // set to to 7 days from now by default
           description: '',
           farm_id: this.farm_id,
-          products: []
+          products: [],
+          show: true
         }
         adaptEvent(new_event, this.farm_products)
         new_event.being_edited = true
