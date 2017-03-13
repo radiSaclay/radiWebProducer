@@ -9,9 +9,9 @@ const settings = {
     LOGIN_URL: SERVEUR_ROOT + 'auth/login',
     HOMEPAGE: '/farmhome',
     ADMINHOMEPAGE: '/adminpanel/farmcreate',
-    EVENTS_URL: SERVEUR_ROOT + '/api/events/',
-    FARMS_URL: SERVEUR_ROOT + '/api/farms/',
-    USER_INFO_URL: SERVEUR_ROOT + '/auth/user',
+    EVENTS_URL: SERVEUR_ROOT + 'api/events/',
+    FARMS_URL: SERVEUR_ROOT + 'api/farms/',
+    USER_INFO_URL: SERVEUR_ROOT + 'auth/user',
     GET_PRODUCT_URL: SERVEUR_ROOT + 'api/products/'
   }
 }
