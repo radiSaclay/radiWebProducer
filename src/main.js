@@ -29,7 +29,7 @@ router.beforeEach((to,from,next) => {
   //check if the user is authenticated
   auth.checkAuth()
   //redirect the user to the login route if he wants to navigate without authentification
-  if (to.name != 'login') {
+  if (to.name != 'login' && to.name != 'adminlogin') {
     if (!auth.user.authenticated) {
       next({name : 'login'})
     }
