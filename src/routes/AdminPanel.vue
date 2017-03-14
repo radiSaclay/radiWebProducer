@@ -32,7 +32,6 @@
           },
           activateItem(item) {
             this.activeItem = item
-            console.log(this.activeItem)
           }
         }
     }
