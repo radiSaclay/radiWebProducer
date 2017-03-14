@@ -1,10 +1,11 @@
 <template>
   <div class="ui olive top fixed inverted menu">
     <div class="ui container">
-      <router-link to="/farmhome" class="item" v-bind:class="this.isActive('/farmhome')" v-if="user.authenticated">Ma Ferme</router-link>
-      <router-link to="/eventhome" class="item" v-bind:class="this.isActive('/eventhome')" v-if="user.authenticated">Mes Evenements</router-link>
+      <router-link to="/farmhome" class="item" v-bind:class="this.isActive('/farmhome')" v-if="user.authenticated && !user.isAdmin">Ma Ferme</router-link>
+      <router-link to="/eventhome" class="item" v-bind:class="this.isActive('/eventhome')" v-if="user.authenticated && !user.isAdmin">Mes Evenements</router-link>
       <a v-on:click='logout' class="item" v-if="user.authenticated">Se déconnecter</a>
-      <router-link to="/" class="header item" v-if="!user.authenticated">Se connecter</router-link>
+      <router-link to="/" class="item" v-if="!user.authenticated">Connexion Producteur</router-link>
+      <router-link to="/adminlogin" class="right item" v-if="!user.authenticated || user.isAdmin">Centre d'administration</router-link>
     </div>
   </div>
 </template>
