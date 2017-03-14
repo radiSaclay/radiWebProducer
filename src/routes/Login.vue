@@ -21,7 +21,6 @@
       <br>
       <div class="ui inverted primary basic button" v-on:click="sendPassword">
         <div class="header">mot de passe oublié ?</div>
-        <div class="message" v-if="showLoginDetails">identifiants de test {{ loginDetails }}</div>
       </div>
     </div>
   </div>
@@ -41,9 +40,6 @@
           email: '',
           password: ''
         },
-        // TODO replace by request to reset password
-        showLoginDetails: false,
-        loginDetails: {email: 'teta', password: 'teta'}
       }
     },
     methods: {
@@ -54,7 +50,6 @@
       },
       // TODO replace by a method that resets the password
       sendPassword: function () {
-        this.showLoginDetails = true
       }
     }
   }
