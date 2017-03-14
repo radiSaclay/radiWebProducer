@@ -1,7 +1,8 @@
 <template>
-  <div v-if="farm" class="ui three column centered grid">
+  <div v-if="farm" class="ui two column centered grid">
     <div class="column">
       <div class="ui equal width form">
+
         <div class="field">
           <label>Nom de la ferme</label>
           <div class="ui input">
@@ -9,10 +10,11 @@
           </div>
         </div>
 
+<!--TODO : add a description field (this one should be the address)-->
         <div class="field">
           <label>Description</label>
           <div class="ui input">
-            <input  :disabled="!farm.being_edited" v-model="farm.address" placeholder="Adresse">
+            <input  :disabled="!farm.being_edited" v-model="farm.address" placeholder="Description">
           </div>
         </div>
 
@@ -26,37 +28,38 @@
         <div class="field">
           <label>Numéro de téléphone</label>
           <div class="ui input">
-            <input  :disabled="!farm.being_edited" v-model="farm.phone" placeholder="Phone">
+            <input  :disabled="!farm.being_edited" v-model="farm.phone" placeholder="Téléphone">
           </div>
         </div>
 
         <div class="field">
-          <label>Numéro de téléphone</label>
+          <label>Site internet</label>
           <div class="ui input">
-            <input  :disabled="!farm.being_edited" v-model="farm.website" placeholder="Website">
+            <input  :disabled="!farm.being_edited" v-model="farm.website" placeholder="Site internet">
           </div>
         </div>
 
         <div class="field">
           <label> Produits </label>
-          <button class="ui primary button" v-if="!farm.being_edited" v-on:click="addProduct(farm_prod_index)">+</button>
           <!-- For each product of this event... -->
-          <div v-for="(farm_product, farm_prod_index) in farm.products">
-            <!-- Create a dropdown menu with value linked to the current product of the farm -->
-            <div class="ui input">
-              <select v-model="farm.products[farm_prod_index]"  :disabled="!farm.being_edited" >
-                <!-- Populate the options of this dropdown menu to be all available products -->
-                <option v-for="product in all_products" v-bind:value="product">
-                  {{product.name}}
-                </option>
-              </select>
-              <button v-if="farm.being_edited" v-on:click="removeProduct(farm_prod_index)">-</button>
+          <div class="ui grid" style="margin-top:0px">
+            <div v-for="(farm_product, farm_prod_index) in farm.products">
+              <!-- Create a dropdown menu with value linked to the current product of the farm -->
+              <dropdown :suggestions="all_products" :selection.sync="farm.products[farm_prod_index].name"
+                        :isDisabled="!farm.being_edited" :product_index="farm_prod_index" :event_index="-1">
+              </dropdown>
             </div>
+            <button class="ui icon primary button" v-if="farm.being_edited" v-on:click="addProduct(farm_prod_index)">
+              <i class="add icon"></i>
+            </button>
           </div>
         </div>
-        <div class="field">
-          <button class="ui primary button" v-on:click="editFarmInfo">{{farm.being_edited ? "Enregistrer" : "Editer"}}</button>
+
+        <br>
+        <div class="ui center aligned basic segment">
+          <button class="ui primary button" v-on:click="editFarmInfo">{{farm.being_edited ? "Enregistrer" : "Editer les informations de la ferme"}}</button>
         </div>
+
       </div>
     </div>
   </div>
@@ -67,7 +70,9 @@
 <script>
   import * as api from '../api/general'
   import settings from '../config/settings'
+  import Dropdown from '../components/Dropdown'
   let farm_id, farm, all_products
+
   export default {
     /* global localStorage:true */
     data () {
@@ -106,6 +111,11 @@
         all_products
       }
     },
+
+    components: {
+      Dropdown
+    },
+
     methods: {
       editFarmInfo: function () {
         if (this.farm.being_edited) {
@@ -131,15 +141,11 @@
       removeProduct: function (farm_prod_index) {
         // Removing product with index "farm_prod_index" from farm
         this.farm.products.splice(farm_prod_index,1)
-      }
+      },
+      editProduct: function (event_index,farm_prod_index,new_product) {
+        this.farm.products[farm_prod_index] = new_product;
+      },
     }
   }
+
 </script>
-
-
-
-<style scoped>
-  .farmhome input {
-    display: inline-block;
-  }
-</style>
