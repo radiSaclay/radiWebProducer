@@ -6,7 +6,7 @@
 
 <script>
     export default{
-        name: 'farm delete',
+        name: 'farmdelete',
         data(){
             return{
             }
