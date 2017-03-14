@@ -44,7 +44,6 @@
     },
     methods: {
       submit: function () {
-        console.log
         auth.userLogin(this, this.credentials, settings.urls.HOMEPAGE)
         this.attempted = true // tells if the user has already attempted to connect
       },
